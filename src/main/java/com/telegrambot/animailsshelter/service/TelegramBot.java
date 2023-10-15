@@ -21,6 +21,19 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     final BotConfig config;
 
+    static final String CAT_SHELTER = "Это приют для кошек.\n\n" +
+            "Выберете интиресующий вас пункт.\n\n"+
+            "Нажмите /infoShelter для подробной информации о приюте.\n\n" +
+            "Нажмите /takeAnimals если хотите приютить кошек.\n\n" +
+            "Нажмите /sendReport если хотите отправить отчет о кошки.\n\n" +
+            "Нажмите /callVolunteer если нужна помощ волонтера.\n\n";
+    static final String DOG_SHELTER = "Это приют для собак.\n\n" +
+            "Выберете интиресующий вас пункт.\n\n"+
+            "Нажмите /infoShelter для подробной информации о приюте.\n\n" +
+            "Нажмите /takeAnimals если хотите приютить собаку.\n\n" +
+            "Нажмите /sendReport если хотите отправить отчет о собаке.\n\n" +
+            "Нажмите /callVolunteer если нужна помощ волонтера.\n\n";
+
     static final String HELP_TEXT = "This bot is created  to demonstrate Spring capabilities.\n\n" +
             "You can execute commands from the main menu on the left or by typing a command:\n\n" +
             "Type /start to see welcome message\n\n" +
@@ -51,11 +64,19 @@ public class TelegramBot extends TelegramLongPollingBot {
             switch (massageText) {
                 case "/start":
                     startCommandReceived(chatId, update.getMessage().getChat().getFirstName());
+                    sendMessage(chatId,"Нажмите /dogShelter для получения информации по приюту для собак.\n\n" +
+                            "Нажмите /catShelter для получения информации по приюту для кошек.\n\n");
                     break;
                 case "/help":
                     sendMessage(chatId, HELP_TEXT);
                     break;
-                default: sendMessage(chatId, "Sorry, command was not recognized");
+                case "/dogShelter":
+                    sendMessage(chatId, DOG_SHELTER);
+                    break;
+                case "/catShelter":
+                    sendMessage(chatId, CAT_SHELTER);
+                    break;
+                default: sendMessage(chatId, "Извините, неизвестная команда");
             }
         }
     }
@@ -72,7 +93,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     private void startCommandReceived(long chatId, String name) {
 
-        String answer = "Hi " + name + ", nice to meet you!";
+        String answer = "Приветствуем " + name + "!";
             log.info("Replied to user " + name);
         sendMessage(chatId, answer);
     }
