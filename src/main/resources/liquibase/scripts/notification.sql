@@ -5,6 +5,8 @@
 create table notification_task (
 id bigserial primary key,
 chat_id int8 not null,
-message text not null,
-exec_date timestamp not null
+firstName text not null,
+lastName text not null,
+userName text not null,
+registered_at timestamp not null
 )
