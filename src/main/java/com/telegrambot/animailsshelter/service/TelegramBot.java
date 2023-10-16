@@ -1,12 +1,18 @@
 package com.telegrambot.animailsshelter.service;
 
 import com.telegrambot.animailsshelter.config.BotConfig;
+import com.telegrambot.animailsshelter.model.User;
+import com.telegrambot.animailsshelter.repository.UserRepository;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.glassfish.grizzly.http.util.TimeStamp;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.Chat;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.commands.BotCommand;
 import org.telegram.telegrambots.meta.api.objects.commands.scope.BotCommandScopeDefault;
@@ -18,17 +24,18 @@ import java.util.List;
 @Slf4j
 @Component
 public class TelegramBot extends TelegramLongPollingBot {
-
+    @Autowired
+    private UserRepository userRepository;
     final BotConfig config;
 
     static final String CAT_SHELTER = "Это приют для кошек.\n\n" +
-            "Выберете интиресующий вас пункт.\n\n"+
+            "Выберете интиресующий вас пункт.\n\n" +
             "Нажмите /infoShelter для подробной информации о приюте.\n\n" +
             "Нажмите /takeAnimals если хотите приютить кошек.\n\n" +
             "Нажмите /sendReport если хотите отправить отчет о кошки.\n\n" +
             "Нажмите /callVolunteer если нужна помощ волонтера.\n\n";
     static final String DOG_SHELTER = "Это приют для собак.\n\n" +
-            "Выберете интиресующий вас пункт.\n\n"+
+            "Выберете интиресующий вас пункт.\n\n" +
             "Нажмите /infoShelter для подробной информации о приюте.\n\n" +
             "Нажмите /takeAnimals если хотите приютить собаку.\n\n" +
             "Нажмите /sendReport если хотите отправить отчет о собаке.\n\n" +
@@ -58,13 +65,15 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        if (update.hasMessage() && update.getMessage().hasText()){
+        if (update.hasMessage() && update.getMessage().hasText()) {
             String massageText = update.getMessage().getText();
             long chatId = update.getMessage().getChatId();
             switch (massageText) {
                 case "/start":
+
+                    registerUser(update.getMessage());
                     startCommandReceived(chatId, update.getMessage().getChat().getFirstName());
-                    sendMessage(chatId,"Нажмите /dogShelter для получения информации по приюту для собак.\n\n" +
+                    sendMessage(chatId, "Нажмите /dogShelter для получения информации по приюту для собак.\n\n" +
                             "Нажмите /catShelter для получения информации по приюту для кошек.\n\n");
                     break;
                 case "/help":
@@ -76,8 +85,26 @@ public class TelegramBot extends TelegramLongPollingBot {
                 case "/catShelter":
                     sendMessage(chatId, CAT_SHELTER);
                     break;
-                default: sendMessage(chatId, "Извините, неизвестная команда");
+                default:
+                    sendMessage(chatId, "Извините, неизвестная команда");
             }
+        }
+    }
+
+    private void registerUser(Message message) {
+        if (userRepository.findById(message.getChatId()).isEmpty()){
+            Long chatId = message.getChatId();
+            Chat chat = message.getChat();
+
+            User user = new User();
+            user.setChatId(chatId);
+            user.setFirstName(chat.getFirstName());
+            user.setLastName(chat.getLastName());
+            user.setUserName(chat.getUserName());
+            user.setRegisteredAt(new TimeStamp());
+
+            userRepository.save(user);
+            log.info("User saved: " + user);
         }
     }
 
@@ -87,21 +114,21 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
     @Override
-    public String getBotToken(){
+    public String getBotToken() {
         return config.getToken();
     }
 
     private void startCommandReceived(long chatId, String name) {
 
         String answer = "Приветствуем " + name + "!";
-            log.info("Replied to user " + name);
+        log.info("Replied to user " + name);
         sendMessage(chatId, answer);
     }
 
     private void sendMessage(long chatId, String textToSend) {
         SendMessage message = new SendMessage();
-//        message.setChatId(chatId);
-        message.setChatId(String.valueOf(chatId));
+        message.setChatId(chatId);
+//        message.setChatId(String.valueOf(chatId));
         message.setText(textToSend);
 
         try {
