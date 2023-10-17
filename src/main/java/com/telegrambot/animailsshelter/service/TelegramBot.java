@@ -128,7 +128,6 @@ public class TelegramBot extends TelegramLongPollingBot {
     private void sendMessage(long chatId, String textToSend) {
         SendMessage message = new SendMessage();
         message.setChatId(chatId);
-//        message.setChatId(String.valueOf(chatId));
         message.setText(textToSend);
 
         try {
