@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Slf4j
+//@Slf4j
 @Component
 public class TelegramBot extends TelegramLongPollingBot {
     private Logger log;
