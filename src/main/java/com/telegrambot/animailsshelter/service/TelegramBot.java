@@ -2,16 +2,18 @@ package com.telegrambot.animailsshelter.service;
 
 import ch.qos.logback.classic.Logger;
 import com.telegrambot.animailsshelter.config.BotConfig;
-import lombok.SneakyThrows;
+import com.telegrambot.animailsshelter.model.User;
+import com.telegrambot.animailsshelter.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.glassfish.grizzly.http.util.TimeStamp;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
-import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
+import org.telegram.telegrambots.meta.api.objects.Chat;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.api.objects.commands.BotCommand;
-import org.telegram.telegrambots.meta.api.objects.commands.scope.BotCommandScopeDefault;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
@@ -27,6 +29,8 @@ public class TelegramBot extends TelegramLongPollingBot {
     private Logger log;
 
     private final BotConfig config;
+@Autowired
+    private UserRepository userRepository;
     private final Map<Long, String> userShelterChoiceMap;
 
     public TelegramBot(BotConfig config) {
@@ -67,6 +71,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
             if (messageText.equals("/start")) {
                 sendWelcomeMessage(chatId);
+                registerUser(update.getMessage());
             }
         }
     }
@@ -101,8 +106,13 @@ public class TelegramBot extends TelegramLongPollingBot {
     private void sendWelcomeMessage(long chatId) {
         SendMessage message = new SendMessage();
         message.setChatId(String.valueOf(chatId));
-        message.setText("Привет! Я бот, созданный для помощи с приютами для животных.\n\n" +
-                "Выберите приют для животных:\n");
+
+        if (userRepository.findById(chatId).isEmpty()) {
+            message.setText("Привет! Я бот, созданный для помощи с приютами для животных.\n\n" +
+                    "Выберите приют для животных:\n");
+        } else {
+            message.setText("Выберите приют для животных:\n");
+        }
 
         InlineKeyboardMarkup markupKeyboard = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
@@ -125,7 +135,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         try {
             execute(message);
         } catch (TelegramApiException e) {
-            log.error("Error occurred: " + e.getMessage());
+//            log.error("Error occurred: " + e.getMessage());
         }
     }
 
@@ -167,7 +177,24 @@ public class TelegramBot extends TelegramLongPollingBot {
         try {
             execute(message);
         } catch (TelegramApiException e) {
-            log.error("Error occurred: " + e.getMessage());
+//            log.error("Error occurred: " + e.getMessage());
+        }
+    }
+
+    private void registerUser(Message message) {
+        if (userRepository.findById(message.getChatId()).isEmpty()){
+            Long chatId = message.getChatId();
+            Chat chat = message.getChat();
+
+            User user = new User();
+            user.setChatId(chatId);
+            user.setFirstName(chat.getFirstName());
+            user.setLastName(chat.getLastName());
+            user.setUserName(chat.getUserName());
+            user.setRegisteredAt(new TimeStamp());
+
+            userRepository.save(user);
+//            log.info("User saved: " + user);
         }
     }
 
@@ -197,7 +224,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         try {
             execute(message);
         } catch (TelegramApiException e) {
-            log.error("Error occurred: " + e.getMessage());
+//            log.error("Error occurred: " + e.getMessage());
         }
     }
 
@@ -211,3 +238,4 @@ public class TelegramBot extends TelegramLongPollingBot {
         return config.getToken();
     }
 }
+
