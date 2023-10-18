@@ -70,8 +70,8 @@ public class TelegramBot extends TelegramLongPollingBot {
             String messageText = update.getMessage().getText();
 
             if (messageText.equals("/start")) {
-                registerUser(update.getMessage());
                 sendWelcomeMessage(chatId);
+                registerUser(update.getMessage());
             }
         }
     }
@@ -106,8 +106,13 @@ public class TelegramBot extends TelegramLongPollingBot {
     private void sendWelcomeMessage(long chatId) {
         SendMessage message = new SendMessage();
         message.setChatId(String.valueOf(chatId));
-        message.setText("Привет! Я бот, созданный для помощи с приютами для животных.\n\n" +
-                "Выберите приют для животных:\n");
+
+        if (userRepository.findById(chatId).isEmpty()) {
+            message.setText("Привет! Я бот, созданный для помощи с приютами для животных.\n\n" +
+                    "Выберите приют для животных:\n");
+        } else {
+            message.setText("Выберите приют для животных:\n");
+        }
 
         InlineKeyboardMarkup markupKeyboard = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
