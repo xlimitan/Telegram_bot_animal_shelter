@@ -4,17 +4,18 @@ import ch.qos.logback.classic.Logger;
 import com.telegrambot.animailsshelter.config.BotConfig;
 import com.telegrambot.animailsshelter.model.User;
 import com.telegrambot.animailsshelter.repository.UserRepository;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.glassfish.grizzly.http.util.TimeStamp;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
-import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.api.objects.commands.BotCommand;
-import org.telegram.telegrambots.meta.api.objects.commands.scope.BotCommandScopeDefault;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.ArrayList;
@@ -28,7 +29,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     private Logger log;
 
     private final BotConfig config;
-@Autowired
+    @Autowired
     private UserRepository userRepository;
     private final Map<Long, String> userShelterChoiceMap;
 
@@ -36,7 +37,6 @@ public class TelegramBot extends TelegramLongPollingBot {
         this.config = config;
         this.userShelterChoiceMap = new HashMap<>();
     }
-
 
     @Override
     public void onUpdateReceived(Update update) {
@@ -71,115 +71,9 @@ public class TelegramBot extends TelegramLongPollingBot {
 
             if (messageText.equals("/start")) {
                 sendWelcomeMessage(chatId);
+                registerUser(update.getMessage());
             }
         }
-    }
-
-    private void sendErrorMessage(long chatId) {
-        SendMessage message = new SendMessage();
-        message.setChatId(String.valueOf(chatId));
-        message.setText("Вы уже выбрали приют. Чтобы выбрать другой приют, вернитесь к предыдущему шагу выбора приюта.");
-
-        InlineKeyboardMarkup markupKeyboard = new InlineKeyboardMarkup();
-        List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
-
-        List<InlineKeyboardButton> row1 = new ArrayList<>();
-        InlineKeyboardButton backButton = new InlineKeyboardButton();
-        backButton.setText("Вернуться к выбору приюта");
-        backButton.setCallbackData("backToShelterSelection");
-        row1.add(backButton);
-
-        keyboard.add(row1);
-        markupKeyboard.setKeyboard(keyboard);
-        message.setReplyMarkup(markupKeyboard);
-
-        try {
-            execute(message);
-        } catch (TelegramApiException e) {
-
-        }
-    }
-
-
-
-    private void sendWelcomeMessage(long chatId) {
-        SendMessage message = new SendMessage();
-        message.setChatId(String.valueOf(chatId));
-        message.setText("Привет! Я бот, созданный для помощи с приютами для животных.\n\n" +
-                "Выберите приют для животных:\n");
-
-        InlineKeyboardMarkup markupKeyboard = new InlineKeyboardMarkup();
-        List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
-
-        List<InlineKeyboardButton> row1 = new ArrayList<>();
-        InlineKeyboardButton infoButton = new InlineKeyboardButton();
-        infoButton.setText("Приют для кошек");
-        infoButton.setCallbackData("catShelter");
-        row1.add(infoButton);
-
-        InlineKeyboardButton adoptButton = new InlineKeyboardButton();
-        adoptButton.setText("Приют для собак");
-        adoptButton.setCallbackData("dogShelter");
-        row1.add(adoptButton);
-
-        keyboard.add(row1);
-        markupKeyboard.setKeyboard(keyboard);
-        message.setReplyMarkup(markupKeyboard);
-
-        try {
-            execute(message);
-        } catch (TelegramApiException e) {
-            log.error("Error occurred: " + e.getMessage());
-        }
-    }
-
-    private void sendMenuOptions(long chatId) {
-        SendMessage message = new SendMessage();
-        message.setChatId(String.valueOf(chatId));
-        message.setText("Выберите действие:");
-
-        InlineKeyboardMarkup markupKeyboard = new InlineKeyboardMarkup();
-        List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
-
-        List<InlineKeyboardButton> row1 = new ArrayList<>();
-        InlineKeyboardButton infoButton = new InlineKeyboardButton();
-        infoButton.setText("Узнать информацию о приюте");
-        infoButton.setCallbackData("info");
-        row1.add(infoButton);
-
-        InlineKeyboardButton adoptButton = new InlineKeyboardButton();
-        adoptButton.setText("Как взять животное из приюта");
-        adoptButton.setCallbackData("adopt");
-        row1.add(adoptButton);
-
-        List<InlineKeyboardButton> row2 = new ArrayList<>();
-        InlineKeyboardButton reportButton = new InlineKeyboardButton();
-        reportButton.setText("Прислать отчет о питомце");
-        reportButton.setCallbackData("report");
-        row2.add(reportButton);
-
-        InlineKeyboardButton volunteerButton = new InlineKeyboardButton();
-        volunteerButton.setText("Позвать волонтера");
-        volunteerButton.setCallbackData("volunteer");
-        row2.add(volunteerButton);
-
-        keyboard.add(row1);
-        keyboard.add(row2);
-        markupKeyboard.setKeyboard(keyboard);
-        message.setReplyMarkup(markupKeyboard);
-
-        try {
-            execute(message);
-        } catch (TelegramApiException e) {
-            log.error("Error occurred: " + e.getMessage());
-        }
-    }
-
-
-
-    private void handleUserChoice(long chatId, String messageText, String shelterChoice) {
-        // Обработку выбора пользователя в зависимости от приюта
-        // Логика для каждого варианта
     }
 
     private void sendErrorMessage(long chatId) {
