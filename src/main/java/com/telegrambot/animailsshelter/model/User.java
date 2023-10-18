@@ -10,6 +10,8 @@ public class User {
     @Id
     private Long chatId;
 
+    private long id;
+
     private String firstName;
 
     private String lastName;
