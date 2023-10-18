@@ -1,8 +1,8 @@
 -- liquibase formatted sql
 
--- changeset golenko:4
+-- changeset cod:4
 
-create table users_data_table (
+create table IF NOT EXISTS users_data_table (
 id bigserial primary key,
 chat_id int8 not null,
 first_name text not null,
