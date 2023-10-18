@@ -23,6 +23,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
+/**
+ * Класс TelegramBot - это основной класс Telegram-бота, который обрабатывает входящие обновления и сообщения.
+ * Он предоставляет интерфейс для взаимодействия с пользователем и управления базой данных.
+ */
 @Slf4j
 @Component
 public class TelegramBot extends TelegramLongPollingBot {
@@ -38,6 +43,11 @@ public class TelegramBot extends TelegramLongPollingBot {
         this.userShelterChoiceMap = new HashMap<>();
     }
 
+    /**
+     * Обработчик входящих обновлений и сообщений от пользователей. Вызывается при получении нового обновления.
+     *
+     * @param update Объект, содержащий информацию об обновлении.
+     */
     @Override
     public void onUpdateReceived(Update update) {
 
@@ -76,6 +86,12 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
+
+    /**
+     * Отправляет сообщение об ошибке пользователю.
+     *
+     * @param chatId Идентификатор чата, куда отправить сообщение.
+     */
     private void sendErrorMessage(long chatId) {
         SendMessage message = new SendMessage();
         message.setChatId(String.valueOf(chatId));
@@ -103,6 +119,11 @@ public class TelegramBot extends TelegramLongPollingBot {
 
 
 
+    /**
+     * Отправляет приветственное сообщение пользователю при старте бота.
+     *
+     * @param chatId Идентификатор чата, куда отправить сообщение.
+     */
     private void sendWelcomeMessage(long chatId) {
         SendMessage message = new SendMessage();
         message.setChatId(String.valueOf(chatId));
@@ -139,6 +160,12 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
+
+    /**
+     * Отправляет сообщение с меню опций для пользователя, позволяя выбрать действия.
+     *
+     * @param chatId Идентификатор чата, куда отправить сообщение.
+     */
     private void sendMenuOptions(long chatId) {
         SendMessage message = new SendMessage();
         message.setChatId(String.valueOf(chatId));
@@ -181,6 +208,12 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
+
+    /**
+     * Регистрирует пользователя в системе и сохраняет информацию о нем в базе данных.
+     *
+     * @param message Объект сообщения, содержащего информацию о пользователе, который регистрируется.
+     */
     private void registerUser(Message message) {
         if (userRepository.findById(message.getChatId()).isEmpty()){
             Long chatId = message.getChatId();
