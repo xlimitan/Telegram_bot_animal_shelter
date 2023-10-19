@@ -5,10 +5,15 @@ import org.glassfish.grizzly.http.util.TimeStamp;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
+/**
+ * Класс User представляет информацию о пользователе бота. Эта информация сохраняется в базе данных.
+ */
 @Entity(name = "usersDataTable")
 public class User {
     @Id
     private Long chatId;
+
+    private long id;
 
     private String firstName;
 

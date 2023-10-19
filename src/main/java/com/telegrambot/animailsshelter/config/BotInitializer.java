@@ -11,6 +11,9 @@ import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
+/**
+ * Класс BotInitializer отвечает за инициализацию и регистрацию бота в Telegram API при запуске приложения Spring.
+ */
 @Slf4j
 @Component
 public class BotInitializer {

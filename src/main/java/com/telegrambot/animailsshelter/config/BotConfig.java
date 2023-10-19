@@ -7,6 +7,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
+/**
+ * Класс BotConfig содержит настройки бота, такие как имя и токен. Эти настройки считываются из файла конфигурации.
+ */
 @Configuration
 @Data
 @PropertySource("application.properties")
