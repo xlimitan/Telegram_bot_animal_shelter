@@ -3,6 +3,10 @@ package com.telegrambot.animailsshelter.config;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Перечисление CommandType представляет различные команды, которые могут быть отправлены боту.
+ * Каждая команда имеет свой текстовый код и описание, которое используется для идентификации и описания команды.
+ */
 @Getter
 @RequiredArgsConstructor
 public enum CommandType {
