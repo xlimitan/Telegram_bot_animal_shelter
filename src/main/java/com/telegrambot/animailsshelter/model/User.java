@@ -11,6 +11,7 @@ import javax.persistence.Id;
 @Entity(name = "usersDataTable")
 public class User {
     @Id
+    private long id;
     private Long chatId;
 
     private long id;
@@ -22,6 +23,17 @@ public class User {
     private String userName;
 
     private TimeStamp registeredAt;
+
+    public User() {
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public Long getChatId() {
         return chatId;
@@ -66,6 +78,7 @@ public class User {
     @Override
     public String toString() {
         return "User{" +
+                ", id" + id +
                 "chatId=" + chatId +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +

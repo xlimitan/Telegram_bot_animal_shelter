@@ -81,7 +81,6 @@ public class TelegramBot extends TelegramLongPollingBot {
 
             if (messageText.equals("/start")) {
                 sendWelcomeMessage(chatId);
-                registerUser(update.getMessage());
             }
         }
     }
@@ -267,7 +266,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
     @Override
-    public String getBotToken() {
+    public String getBotToken(){
         return config.getToken();
     }
 }
