@@ -13,15 +13,15 @@
 Волонтеры приюта могут принимать решение о дальнейшей судьбе собаки на основе этих отчетов. 
 
 В проекте используются технологии:
-Java 17
-Maven
-Spring Boot 2.7.16
-Spring Web
-Spring Data
-Spring JPA
-Hibernate
-PostgreSQL
-Liquibase
-Swagger Ui
-Telegrambots 
+- Java 17
+- Maven
+- Spring Boot 2.7.16
+- Spring Web
+- Spring Data
+- Spring JPA
+- Hibernate
+- PostgreSQL
+- Liquibase
+- Swagger Ui
+- Telegrambots 
 
