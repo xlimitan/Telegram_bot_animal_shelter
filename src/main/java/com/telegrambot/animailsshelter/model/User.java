@@ -10,9 +10,11 @@ import javax.persistence.Id;
  */
 @Entity(name = "usersDataTable")
 public class User {
+
     private long id;
     @Id
-    private long chatId;
+    private Long chatId;
+
 
     private String firstName;
 
