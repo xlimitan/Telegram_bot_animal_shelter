@@ -132,8 +132,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         message.setChatId(String.valueOf(chatId));
 
         if (userRepository.findById(chatId).isEmpty()) {
-            message.setText("Привет! Я бот, созданный для помощи с приютами для животных.\n\n" +
-                    "Выберите приют для животных:\n");
+            message.setText(HELLO);
         } else {
             message.setText("Выберите приют для животных:\n");
         }
