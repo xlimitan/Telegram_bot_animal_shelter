@@ -4,11 +4,11 @@
 
 create table  IF NOT EXISTS users_data_table (
 id bigserial primary key,
-chat_id int8 not null,
+chat_id int8,
 first_name varchar(20),
 last_name varchar(20),
 user_name varchar(20),
-registered_at bytea not null
+registered_at bytea
 );
 
 create table if not exists animal(

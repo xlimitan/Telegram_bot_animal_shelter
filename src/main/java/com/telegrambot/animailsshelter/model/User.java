@@ -10,11 +10,9 @@ import javax.persistence.Id;
  */
 @Entity(name = "usersDataTable")
 public class User {
+    private long id;
     @Id
-    private long id;
-    private Long chatId;
-
-    private long id;
+    private long chatId;
 
     private String firstName;
 
@@ -25,6 +23,13 @@ public class User {
     private TimeStamp registeredAt;
 
     public User() {
+    }
+    public User(long id,long chatId, String firstName, String lastName, String userName) {
+        this.chatId = chatId;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.userName = userName;
+        this.id = id;
     }
 
     public long getId() {

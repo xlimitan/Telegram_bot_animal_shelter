@@ -18,7 +18,6 @@ public class Shelter {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-
     @Column(name = "shelter_type")
     private String shelterType;
     @Column(name = "shelter_name")
@@ -31,11 +30,16 @@ public class Shelter {
     @OneToMany(mappedBy = "shelter")
     private Collection<Animal> animals;
 
-    public Shelter(String shelterType, String shelterName, String address, String information) {
+    public Shelter(long id,String shelterType, String shelterName, String address, String information) {
+        this.id = id;
         this.shelterType = shelterType;
         this.shelterName = shelterName;
         this.address = address;
         this.information = information;
+    }
+
+    public Shelter() {
+
     }
     @Override
     public boolean equals(Object o) {
