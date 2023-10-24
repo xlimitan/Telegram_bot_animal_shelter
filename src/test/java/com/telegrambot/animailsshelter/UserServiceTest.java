@@ -19,6 +19,7 @@ import static org.mockito.Mockito.*;
 
 class UserServiceTest {
 
+
     @Mock
     private UserRepository userRepository;
 
