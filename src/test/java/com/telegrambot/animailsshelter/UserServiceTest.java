@@ -1,4 +1,5 @@
 package com.telegrambot.animailsshelter;
+
 import com.telegrambot.animailsshelter.model.User;
 import com.telegrambot.animailsshelter.repository.UserRepository;
 import com.telegrambot.animailsshelter.service.UserService;
