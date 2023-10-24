@@ -29,7 +29,11 @@ public class Animal {
     @JoinColumn(name = "shelter_id")
     private Shelter shelter;
 
-    public Animal(String animalType, String name, int age, String breed) {
+    public Animal() {
+
+    }
+    public Animal( long id,String animalType, String name, int age, String breed) {
+        this.id = id;
         this.animalType = animalType;
         this.name = name;
         this.age = age;

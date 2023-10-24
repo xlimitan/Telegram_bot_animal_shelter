@@ -1,89 +1,48 @@
 package com.telegrambot.animailsshelter.controller;
 
 import com.telegrambot.animailsshelter.model.User;
-import com.telegrambot.animailsshelter.repository.UserRepository;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import com.telegrambot.animailsshelter.service.UserService;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
-import javax.validation.Valid;
-import javax.validation.constraints.Positive;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-
-@RequestMapping("/user")
+/**
+ * Контроллер для работы с пользователем
+ */
+@RequestMapping("/users")
 @RestController
 public class UserController {
 
-    private final UserRepository userRepository;
+    private final UserService userService;
 
-    public UserController(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
-
-    // Создание нового пользователя
-    @PostMapping
-    public ResponseEntity<User> save(@RequestBody User user) {
-        try {
-            return ResponseEntity.status(HttpStatus.CREATED).body(userRepository.save(user));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
+    // добавление пользователя
+    @PostMapping("/")
+    public User createUser(long id,long chatId,String firstName,String lastName,String userName) {
+        return userService.saveBotUser(id, chatId,firstName, lastName, userName);
     }
-    // Получение информации о пользователе по ID
-    @GetMapping("/id/{id}")
-    public ResponseEntity<?> getUserById(@PathVariable Long Id) {
-        try {
-            Optional<User> user = userRepository.findById(Id);
-            if (user.isPresent()) {
-                return new ResponseEntity<>(user, HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
-            }
-        } catch (Exception e) {
-            return new ResponseEntity<>("Failed to retrieve user: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    //поиск всех пользователей
+   @GetMapping("/")
+      public List<User> getAllUsers() {
+        return userService.getAllUsers();
     }
-    // "Получение списка всех посетителей"
-    @GetMapping
-    public ResponseEntity<List<User>> findAll() {
-        List<User> users = userRepository.findAll();
-        if (users.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(users);
+    //поиск по Id пользователя
+    @GetMapping("/{id}")
+    public Optional<User> getUserById(Long id) {
+        return userService.getUserById(id);
     }
-    //"Получение посетителя по Telegram chatId"
-    @GetMapping("/chatId/{chatId}")
-    public ResponseEntity<User> findByChatId(@PathVariable @Positive Long chatId) {
-        return ResponseEntity.of(userRepository.findByChatId(chatId));
-    }
-    //"Обновление информации о посетителе по ID"
+    //редактирование пользователя
     @PutMapping("/{id}")
-    public ResponseEntity<User> updateById(
-            @PathVariable Long id,
-            @RequestParam(name = "chatId", required = false) @Positive Long chatId,
-            @RequestParam(name = "firstName", required = false) String firstName,
-            @RequestParam(name = "lastName", required = false) String lastName) {
-        try {
-            User User = userRepository.findById(id).orElseThrow();
-            User.setChatId(chatId);
-            User.setFirstName(firstName);
-            User.setLastName(lastName);
-            return ResponseEntity.ok(userRepository.save(User));
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Ошибка обновления:" + e.getMessage());
-        }
+    public Integer updateUser(long id, long chatId, String firstName, String lastName, String userName) {
+        return userService.updateUser(id, chatId,firstName, lastName, userName);
     }
-    //"Удаление посетителя из приюта, соответствующей переданному в параметре ID"
+    //удаление пользователя
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteById(@PathVariable @Positive Long id) {
-        try {
-            userRepository.deleteById(id);
-            return ResponseEntity.ok().body("Запись удалена");
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Ошибка удаления:" + e.getMessage());
-        }
+    public void deleteUser(@PathVariable Long id) {
+        userService.deleteUser(id);
     }
 }
+

@@ -26,6 +26,13 @@ public class User {
 
     public User() {
     }
+    public User(long id,long chatId, String firstName, String lastName, String userName) {
+        this.chatId = chatId;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.userName = userName;
+        this.id = id;
+    }
 
     public long getId() {
         return id;

@@ -24,13 +24,16 @@ public class AnimalOwner {
     private String eMail;
     @Column(name = "trial_period")
     private boolean trialPeriod;
-    public AnimalOwner(String name, String phoneNumber, String eMail, boolean trialPeriod) {
+    public AnimalOwner(long id,String name, String phoneNumber, String eMail, boolean trialPeriod) {
+        this.id = id;
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.eMail = eMail;
         this.trialPeriod = trialPeriod;
     }
 
+    public AnimalOwner() {
+    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

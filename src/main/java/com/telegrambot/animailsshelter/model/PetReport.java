@@ -32,11 +32,14 @@ public class PetReport {
     @JoinColumn(name = "animalowner_id")
     private AnimalOwner animalOwner;
 
-    public PetReport(String diet, String feelings, boolean checkInf, LocalDateTime date) {
+    public PetReport(long id,String diet, String feelings, boolean checkInf, LocalDateTime date) {
+        this.id = id;
         this.diet = diet;
         this.feelings = feelings;
         this.checkInf = checkInf;
         this.date = date;
+    }
+    public PetReport() {
     }
     @Override
     public boolean equals(Object o) {
