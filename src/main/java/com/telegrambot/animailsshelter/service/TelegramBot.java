@@ -23,6 +23,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.telegrambot.animailsshelter.config.Information.HELLO;
+
 
 /**
  * Класс TelegramBot - это основной класс Telegram-бота, который обрабатывает входящие обновления и сообщения.

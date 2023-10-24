@@ -14,7 +14,6 @@ public class User {
     private long id;
     private Long chatId;
 
-    private long id;
 
     private String firstName;
 
