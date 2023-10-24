@@ -23,6 +23,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.telegrambot.animailsshelter.config.Information.HELLO;
+import static com.telegrambot.animailsshelter.config.Information.INFO_SHELTER;
+
 
 /**
  * Класс TelegramBot - это основной класс Telegram-бота, который обрабатывает входящие обновления и сообщения.
@@ -81,6 +84,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
             if (messageText.equals("/start")) {
                 sendWelcomeMessage(chatId);
+                registerUser(update.getMessage());
             }
         }
     }
@@ -128,8 +132,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         message.setChatId(String.valueOf(chatId));
 
         if (userRepository.findById(chatId).isEmpty()) {
-            message.setText("Привет! Я бот, созданный для помощи с приютами для животных.\n\n" +
-                    "Выберите приют для животных:\n");
+            message.setText(HELLO);
         } else {
             message.setText("Выберите приют для животных:\n");
         }
