@@ -22,11 +22,15 @@ public class Volunteer {
     @Column(name = "phone_number")
     private String phoneNumber;
 
-    public Volunteer(String name, String phoneNumber) {
+    public Volunteer(long id,String name, String phoneNumber) {
+        this.id = id;
         this.name = name;
         this.phoneNumber = phoneNumber;
     }
 
+    public Volunteer() {
+
+    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

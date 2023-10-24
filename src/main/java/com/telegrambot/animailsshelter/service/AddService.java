@@ -2,12 +2,14 @@ package com.telegrambot.animailsshelter.service;
 
 import com.telegrambot.animailsshelter.model.*;
 import com.telegrambot.animailsshelter.repository.*;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 /**
  * Класс AddService - это класс для добавления в базу данных
  * Он предоставляет интерфейс добавлеения таких сущностей как Animal, AnimalOwner, PetReport, Shelter, Volunteer в базу данных.
  */
+@Service
 public class AddService {
     private final AnimalOwnerRepository animalOwnerRepository;
     private final AnimalRepository animalRepository;
@@ -33,8 +35,8 @@ public class AddService {
  * @param age возраст животного
  * @param breed порода
  */
-    public Animal animalSave(String animalType, String name, int age, String breed) {
-        Animal animal = new Animal(animalType, name, age, breed);
+    public Animal animalSave( long id,String animalType, String name, int age, String breed) {
+        Animal animal = new Animal(id,animalType, name, age, breed);
         return animalRepository.save(animal);
     }
 /**
@@ -44,8 +46,8 @@ public class AddService {
 * @param eMail электронная почта
 * @param trialPeriod испытательный срок
 */
-    public AnimalOwner animalOwnerSave(String name, String phoneNumber,  String eMail, boolean trialPeriod) {
-        AnimalOwner animalOwner = new AnimalOwner(name, phoneNumber, eMail, trialPeriod);
+    public AnimalOwner animalOwnerSave(long id,String name, String phoneNumber,  String eMail, boolean trialPeriod) {
+        AnimalOwner animalOwner = new AnimalOwner(id,name, phoneNumber, eMail, trialPeriod);
         return animalOwnerRepository.save(animalOwner);
     }
 /**
@@ -54,9 +56,9 @@ public class AddService {
 * @param feelings состояние животного
 * @param check проверялось ли животное
 */
-    public PetReport petReportSave(String diet, String feelings, boolean check) {
+    public PetReport petReportSave(long id,String diet, String feelings, boolean check) {
         LocalDateTime localDateTime = LocalDateTime.now();
-        PetReport petReport = new PetReport(diet, feelings, check, localDateTime);
+        PetReport petReport = new PetReport(id,diet, feelings, check, localDateTime);
         return petReportRepository.save(petReport);
     }
 /**
@@ -65,8 +67,8 @@ public class AddService {
 * @param shelterName  названия приюта
 * @param address  адрес приюта
 */
-    public Shelter shelterSave(String shelterType, String shelterName, String address, String information) {
-        Shelter shelter = new Shelter(shelterType, shelterName, address, information);
+    public Shelter shelterSave(long id,String shelterType, String shelterName, String address, String information) {
+        Shelter shelter = new Shelter(id,shelterType, shelterName, address, information);
         return shelterRepository.save(shelter);
     }
 /**
@@ -74,8 +76,8 @@ public class AddService {
 * @param name имя
 * @param phoneNumber номер телефона волонтёра
 */
-    public Volunteer volunteerSave(String name, String phoneNumber) {
-        Volunteer volunteer = new Volunteer(name, phoneNumber);
+    public Volunteer volunteerSave(long id,String name, String phoneNumber) {
+        Volunteer volunteer = new Volunteer(id,name, phoneNumber);
         return volunteerRepository.save(volunteer);
     }
 }
