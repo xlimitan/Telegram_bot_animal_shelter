@@ -10,8 +10,9 @@ import javax.persistence.Id;
  */
 @Entity(name = "usersDataTable")
 public class User {
-    @Id
+
     private long id;
+    @Id
     private Long chatId;
 
 

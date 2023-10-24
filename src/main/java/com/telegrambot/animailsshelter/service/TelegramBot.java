@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.telegrambot.animailsshelter.config.Information.HELLO;
+import static com.telegrambot.animailsshelter.config.Information.INFO_SHELTER;
 
 
 /**
@@ -83,6 +84,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
             if (messageText.equals("/start")) {
                 sendWelcomeMessage(chatId);
+                registerUser(update.getMessage());
             }
         }
     }

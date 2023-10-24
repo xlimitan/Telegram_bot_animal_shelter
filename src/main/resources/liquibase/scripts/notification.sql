@@ -1,6 +1,6 @@
 -- liquibase formatted sql
 
--- changeset cod:1
+-- changeset cod:2
 
 create table  IF NOT EXISTS users_data_table (
 id bigserial primary key,
