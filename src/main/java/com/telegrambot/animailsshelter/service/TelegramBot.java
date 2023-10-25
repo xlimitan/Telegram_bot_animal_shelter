@@ -53,30 +53,31 @@ public class TelegramBot extends TelegramLongPollingBot {
      */
     @Override
     public void onUpdateReceived(Update update) {
-
         if (update.hasCallbackQuery()) {
             CallbackQuery callbackQuery = update.getCallbackQuery();
             String callbackData = callbackQuery.getData();
             long chatId = callbackQuery.getMessage().getChatId();
 
             if (userShelterChoiceMap.containsKey(chatId)) {
+                if (callbackData.equals("info")) {
+                    sendShelterInfo(chatId, userShelterChoiceMap.get(chatId));
+                } else if (callbackData.equals("adopt")) {
+                    sendHowToAdoptInfo(chatId, userShelterChoiceMap.get(chatId));
+                } else if (callbackData.equals("report")) {
+                    sendReportInstructions(chatId, userShelterChoiceMap.get(chatId));
+                } else if (callbackData.equals("volunteer")) {
+                    callVolunteer(chatId);
+                }
+            } else {
                 if (callbackData.equals("backToShelterSelection")) {
                     userShelterChoiceMap.remove(chatId);
                     sendWelcomeMessage(chatId);
+                } else if (callbackData.equals("catShelter") || callbackData.equals("dogShelter")) {
+                    userShelterChoiceMap.put(chatId, callbackData);
+                    sendMenuOptions(chatId);
                 } else {
                     sendErrorMessage(chatId);
                 }
-            } else if (callbackData.equals("catShelter") || callbackData.equals("dogShelter")) {
-                userShelterChoiceMap.put(chatId, callbackData);
-                sendMenuOptions(chatId);
-            } else if (callbackData.equals("info")) {
-                sendShelterInfo(chatId, userShelterChoiceMap.get(chatId));
-            } else if (callbackData.equals("adopt")) {
-                sendHowToAdoptInfo(chatId, userShelterChoiceMap.get(chatId));
-            } else if (callbackData.equals("report")) {
-                sendReportInstructions(chatId, userShelterChoiceMap.get(chatId));
-            } else if (callbackData.equals("volunteer")) {
-                callVolunteer(chatId);
             }
         } else if (update.hasMessage() && update.getMessage().hasText()) {
             long chatId = update.getMessage().getChatId();
@@ -241,15 +242,65 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
     private void sendShelterInfo(long chatId, String shelterChoice) {
-        // Логика для отправки информации о приюте
+        SendMessage message = new SendMessage();
+        message.setChatId(String.valueOf(chatId));
+
+        String shelterInfo = getShelterInfo(shelterChoice);
+
+        message.setText(shelterInfo);
+
+        try {
+            execute(message);
+        } catch (TelegramApiException e) {
+            //
+        }
+    }
+
+    private String getShelterInfo(String shelterChoice) {
+        if ("catShelter".equals(shelterChoice)) {
+            return "Информация о приюте для кошек...";
+        } else if ("dogShelter".equals(shelterChoice)) {
+            return "Информация о приюте для собак...";
+        } else {
+            return "Неизвестный выбор приюта.";
+        }
     }
 
     private void sendHowToAdoptInfo(long chatId, String shelterChoice) {
-        // Логика для отправки информации о том, как взять животное из приюта
+        SendMessage message = new SendMessage();
+        message.setChatId(String.valueOf(chatId));
+
+        String securityInfo = getSecurityInfo(shelterChoice);
+
+        message.setText(securityInfo);
+
+        try {
+            execute(message);
+        } catch (TelegramApiException e) {
+            //
+        }
+    }
+    private String getSecurityInfo(String shelterChoice) {
+        return "Контактные данные охраны и рекомендации по безопасности...";
     }
 
     private void sendReportInstructions(long chatId, String shelterChoice) {
         // Логика для отправки инструкций по отправке отчета
+        SendMessage message = new SendMessage();
+        message.setChatId(String.valueOf(chatId));
+
+        String reportInstructions = getReportInstructions(shelterChoice);
+
+        message.setText(reportInstructions);
+
+        try {
+            execute(message);
+        } catch (TelegramApiException e) {
+            //
+        }
+    }
+    private String getReportInstructions(String shelterChoice) {
+        return "Инструкции по отправке отчета...";
     }
 
     private void callVolunteer(long chatId) {
