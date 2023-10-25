@@ -3,6 +3,8 @@ package com.telegrambot.animailsshelter.model;
 import org.glassfish.grizzly.http.util.TimeStamp;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 /**
@@ -13,6 +15,7 @@ public class User {
 
     private long id;
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long chatId;
 
 
