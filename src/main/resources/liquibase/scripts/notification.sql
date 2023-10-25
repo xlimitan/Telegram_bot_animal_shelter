@@ -52,3 +52,11 @@ id bigserial primary key,
 name varchar(100),
 phone_number varchar(100)
 );
+create table if not exists photo(
+id bigserial primary key,
+file_path varchar(1024),
+file_size bigserial,
+media_type varchar(1024),
+data bytea,
+animal_id int8
+)

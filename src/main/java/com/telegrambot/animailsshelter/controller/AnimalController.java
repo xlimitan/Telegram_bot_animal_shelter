@@ -13,7 +13,6 @@ import java.util.Optional;
 public class AnimalController {
     private final AddService addService;
     private final AnimalRepository animalRepository;
-
     public AnimalController(AddService addService, AnimalRepository animalRepository) {
         this.addService = addService;
         this.animalRepository = animalRepository;

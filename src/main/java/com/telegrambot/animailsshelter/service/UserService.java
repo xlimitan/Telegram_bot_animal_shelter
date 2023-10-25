@@ -2,6 +2,7 @@ package com.telegrambot.animailsshelter.service;
 
 import com.telegrambot.animailsshelter.model.User;
 import com.telegrambot.animailsshelter.repository.UserRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -34,7 +35,7 @@ public class UserService {
     }
     /**
      * Метод возращает список пользователей
-     * Используется метод репозитория {@link JpaRepository#findAll(Object)}
+     * Используется метод репозитория
      * @return возращает всех пользователей
     */
     public List<User> getAllUsers() {
@@ -51,7 +52,7 @@ public class UserService {
     }
     /**
      * Обновляет сущность по передаваемым параметрам.
-     * Используется метод репозитория {@link CatRepository#updateById(Long, Long, String, String, String)}
+     * Используется метод репозитория
      *
      * @param id  ID пользователя
      * @param chatId ID пользователя из чата
