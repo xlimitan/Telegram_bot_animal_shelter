@@ -46,6 +46,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         this.userShelterChoiceMap = new HashMap<>();
     }
 
+
     /**
      * Обработчик входящих обновлений и сообщений от пользователей. Вызывается при получении нового обновления.
      *
