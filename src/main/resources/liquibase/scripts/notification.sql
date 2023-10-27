@@ -3,8 +3,7 @@
 -- changeset cod:2
 
 create table  IF NOT EXISTS users_data_table (
-id bigserial primary key,
-chat_id int8,
+chat_id bigserial primary key,
 first_name varchar(20),
 last_name varchar(20),
 user_name varchar(20),

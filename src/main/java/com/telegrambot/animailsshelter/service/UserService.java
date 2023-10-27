@@ -29,8 +29,8 @@ public class UserService {
      * @return возвращаемая сущность
      */
 
-    public User saveBotUser(long id, long chatId, String firstName, String lastName, String userName) {
-        User user = new User(id, chatId, firstName, lastName, userName);
+    public User saveBotUser(long chatId, String firstName, String lastName, String userName) {
+        User user = new User(chatId, firstName, lastName, userName);
         return userRepository.save(user);
     }
     /**
@@ -47,8 +47,8 @@ public class UserService {
      * @param id ID пользователя
      * @return возвращает сущность
      */
-    public Optional<User> getUserById(Long id) {
-        return userRepository.findById(id);
+    public Optional<User> getUserById(Long chatId) {
+        return userRepository.findById(chatId);
     }
     /**
      * Обновляет сущность по передаваемым параметрам.
@@ -61,7 +61,7 @@ public class UserService {
      * @param userName Имя пользователя
      * @return число ({@code 1} - сущность обновлена, {@code 0} - сущность не обновлена)
      */
-    public Integer updateUser(long id, long chatId, String firstName, String lastName, String userName) {
+  /*  public Integer updateUser(long id, long chatId, String firstName, String lastName, String userName) {
         Optional<User> user = getUserById(id);
         if (user.isEmpty()
                 || (firstName == null || firstName.isBlank())
@@ -72,7 +72,7 @@ public class UserService {
             userRepository.updateById(id, chatId, firstName, lastName, userName);
             return 1;
         }
-    }
+    }*/
     /**
      * Удаляет User по ID.
      * Используется метод репозитория {@link JpaRepository#deleteById(Object)}
@@ -80,12 +80,12 @@ public class UserService {
      * @param id ID пользователя
      * @return {@code true} - сущность сохранена, {@code false} - сущность не сохранена
      */
-    public Boolean deleteUser(Long id) {
-        Optional<User> findUserById = getUserById(id);
+    public Boolean deleteUser(Long chatId) {
+        Optional<User> findUserById = getUserById(chatId);
         if (findUserById.isEmpty()) {
             return false;
         }
-        userRepository.deleteById(id);
+        userRepository.deleteById(chatId);
         return true;
     }
 }

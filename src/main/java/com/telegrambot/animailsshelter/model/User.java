@@ -12,12 +12,9 @@ import javax.persistence.Id;
  */
 @Entity(name = "usersDataTable")
 public class User {
-
-    private long id;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long chatId;
-
 
     private String firstName;
 
@@ -29,20 +26,12 @@ public class User {
 
     public User() {
     }
-    public User(long id,long chatId, String firstName, String lastName, String userName) {
-        this.chatId = chatId;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.userName = userName;
-        this.id = id;
-    }
 
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
+    public User( Long chatId, String firstName, String lastName, String userName) {
+        setChatId(chatId);
+        setFirstName(firstName);
+        setLastName(lastName);
+        setUserName(userName);
     }
 
     public Long getChatId() {
@@ -88,12 +77,11 @@ public class User {
     @Override
     public String toString() {
         return "User{" +
-                ", id" + id +
                 "chatId=" + chatId +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", userName='" + userName + '\'' +
-                ", registeredAt=" + registeredAt +
+                /*", registeredAt=" + registeredAt +*/
                 '}';
     }
 }

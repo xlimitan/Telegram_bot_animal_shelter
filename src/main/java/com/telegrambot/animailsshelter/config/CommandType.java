@@ -14,11 +14,15 @@ public enum CommandType {
     DOGS("/dogs", "Приют для собак"),
     START("/start", "Добро пожаловать!"),
     INFO("/info", "Информация о приюте"),
+    ADDRESS("shelterAddress","Адрес приюта"),
     REPORT("/report", "Прислать отчет о питомце"),
     VOLUNTEER("/volunteer", "Позвать волонтера"),
     SHELTER("/shelter", "О приюте"),
     CONTACT("/contact", "Телефон приюта"),
-    PHONE("/phone", "Оставить номер телефона для связи");
+    PHONE("/phone", "Оставить номер телефона для связи"),
+    SHELTERDIRECTIONS("/shelterDirections","Схема проезда до приюта");
+
+
     private final String command;
     private final String description;
 }

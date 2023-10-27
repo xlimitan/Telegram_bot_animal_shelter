@@ -33,10 +33,10 @@ class UserServiceTest {
 
     @Test
     void testSaveBotUser() {
-        User user = new User(1L, 12345L, "John", "Doe", "johndoe");
+        User user = new User(1L, "John", "Doe", "johndoe");
         when(userRepository.save(user)).thenReturn(user);
 
-        User savedUser = userService.saveBotUser(1L, 12345L, "John", "Doe", "johndoe");
+        User savedUser = userService.saveBotUser(1L, "John", "Doe", "johndoe");
 
         //assertEquals(user, savedUser);
 
@@ -55,7 +55,7 @@ class UserServiceTest {
 
     @Test
     void testGetUserById() {
-        User user = new User(1L, 12345L, "John", "Doe", "johndoe");
+        User user = new User(1L,  "John", "Doe", "johndoe");
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
 
         Optional<User> retrievedUser = userService.getUserById(1L);
@@ -67,7 +67,7 @@ class UserServiceTest {
 
     @Test
     void testDeleteUser() {
-        User user = new User(1L, 12345L, "John", "Doe", "johndoe");
+        User user = new User(1L, "John", "Doe", "johndoe");
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
 
         Boolean result = userService.deleteUser(1L);
