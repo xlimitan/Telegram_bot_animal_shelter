@@ -23,6 +23,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.telegrambot.animailsshelter.config.CommandType.ADDRESS;
+import static com.telegrambot.animailsshelter.config.CommandType.VOLUNTEER;
 import static com.telegrambot.animailsshelter.config.Information.HELLO;
 import static com.telegrambot.animailsshelter.config.Information.INFO_SHELTER;
 
@@ -133,7 +135,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         SendMessage message = new SendMessage();
         message.setChatId(String.valueOf(chatId));
 
-        if (userRepository.findById(chatId).isEmpty()) {
+        if (userRepository.findByChatId(chatId).isEmpty()) {
             message.setText(HELLO);
         } else {
             message.setText("Выберите приют для животных:\n");
@@ -228,7 +230,7 @@ public class TelegramBot extends TelegramLongPollingBot {
             user.setFirstName(chat.getFirstName());
             user.setLastName(chat.getLastName());
             user.setUserName(chat.getUserName());
-            user.setRegisteredAt(new TimeStamp());
+            user.getRegisteredAt();
 
             userRepository.save(user);
 //            log.info("User saved: " + user);
@@ -264,8 +266,8 @@ public class TelegramBot extends TelegramLongPollingBot {
 
         List<InlineKeyboardButton> row1 = new ArrayList<>();
         InlineKeyboardButton addressButton = new InlineKeyboardButton();
-        addressButton.setText("Адрес приюта");
-        addressButton.setCallbackData("shelterAddress");
+        addressButton.setText(ADDRESS.getDescription());
+        addressButton.setCallbackData(ADDRESS.getCommand());
         row1.add(addressButton);
 
         List<InlineKeyboardButton> row2 = new ArrayList<>();
@@ -300,8 +302,8 @@ public class TelegramBot extends TelegramLongPollingBot {
 
         List<InlineKeyboardButton> row7 = new ArrayList<>();
         InlineKeyboardButton volunteerButton = new InlineKeyboardButton();
-        volunteerButton.setText("Позвать волонтера");
-        volunteerButton.setCallbackData("volunteer");
+        volunteerButton.setText(VOLUNTEER.getDescription());
+        volunteerButton.setCallbackData(VOLUNTEER.getCommand());
         row7.add(volunteerButton);
 
         keyboard.add(row1);

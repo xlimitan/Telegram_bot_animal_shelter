@@ -13,9 +13,6 @@ import java.util.Optional;
  * Интерфейс UserRepository представляет репозиторий для управления информацией о пользователях бота.
  */
 public interface UserRepository extends JpaRepository<User,Long> {
+    Boolean existsByChatId(Long chatId);
     Optional<User> findByChatId(Long chatId);
-
-    default User updateById(long id, long chatId, String firstName, String lastName, String userName) {
-        return null;
-    }
 }
