@@ -13,7 +13,7 @@ import javax.persistence.Id;
 @Entity(name = "usersDataTable")
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long chatId;
 
     private String firstName;
