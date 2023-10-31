@@ -120,7 +120,6 @@ public class TelegramBot extends TelegramLongPollingBot {
                 case "rule" -> sendText(chatId, RULES_OF_MEETING_A_PET);
                 case "documents" -> sendText(chatId, REQUIRED_DOCUMENTS);
                 case "transport" -> sendText(chatId, RECOMMENDATIONS_TRANSPORTATION);
-
                 default -> sendErrorMessage(chatId);
             }
         } else {
