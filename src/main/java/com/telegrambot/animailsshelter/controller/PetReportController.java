@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
-@RequestMapping("/pet-report")
+/*@RequestMapping("/pet-report")
 @RestController
 public class PetReportController {
     private final AddService addService;
@@ -42,4 +42,4 @@ public class PetReportController {
     public void deleteById(long id) {
         petReportRepository.deleteById(id);
     }
-}
+}*/

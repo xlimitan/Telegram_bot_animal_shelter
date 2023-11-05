@@ -455,7 +455,9 @@ public class TelegramBot extends TelegramLongPollingBot {
         if ("catShelter".equals(shelterChoice)) {
             InlineKeyboardButton arrangementButton = new InlineKeyboardButton();
             arrangementButton.setText("Рекомендации по обустройству дома");
+
             arrangementButton.setCallbackData("homeImprovement");
+
             row4.add(arrangementButton);
 
         } else if ("dogShelter".equals(shelterChoice)) {
@@ -598,6 +600,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
+
     private void homeImprovement(long chatId, String shelterChoice) {
         SendMessage message = new SendMessage();
         message.setChatId(String.valueOf(chatId));
@@ -684,6 +687,18 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
+
+    private void sendBecomeVolunteerInstructions(long chatId) {
+        SendMessage message = new SendMessage();
+        message.setChatId(String.valueOf(chatId));
+        message.setText(LEAVE_CONTACT_DETAILS);
+
+        try {
+            execute(message);
+        } catch (TelegramApiException e) {
+            //
+        }
+    }
 
     private void sendBecomeVolunteerInstructions(long chatId) {
         SendMessage message = new SendMessage();
