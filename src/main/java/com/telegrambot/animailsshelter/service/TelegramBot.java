@@ -109,7 +109,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                 case "adopt" -> sendHowToAdoptInfoForShelter(chatId, userShelterChoiceMap.get(chatId));
                 case "becomeVolunteer" -> sendBecomeVolunteerInstructions(chatId);
                 case "report" -> sendReportInstructions(chatId);
-                case "volunteer" -> callVolunteer(chatId);
+                case "volunteer" -> sendText(chatId, CALL_VOLUNTEER);
                 case "aboutUs" -> aboutUs(chatId);
                 case "address" -> sendText(chatId, ADDRESS_SHELTER);
                 case "directions" -> sendText(chatId, DRIVING_DIRECTIONS);
@@ -120,6 +120,14 @@ public class TelegramBot extends TelegramLongPollingBot {
                 case "rule" -> sendText(chatId, RULES_OF_MEETING_A_PET);
                 case "documents" -> sendText(chatId, REQUIRED_DOCUMENTS);
                 case "transport" -> sendText(chatId, RECOMMENDATIONS_TRANSPORTATION);
+                case "homeImprovement" -> homeImprovement(chatId, userShelterChoiceMap.get(chatId));
+                case "puppyRecommendations" -> sendText(chatId, RECOMMENDATIONS_ADVANCEMENT_YOUNG);
+                case "oldRecommendations" -> sendText(chatId, RECOMMENDATIONS_ADVANCEMENT_OLD);
+                case "disabledRecommendations" -> sendText(chatId, RECOMMENDATIONS_ADVANCEMENT_DISABLED);
+                case "cynologist" -> cynologist(chatId);
+                case "reasonsRefusal" -> sendText(chatId, REASONS_FAILURE);
+                case "tipsCynologist" -> sendText(chatId, TIPS_KINOLOGIST);
+                case "choiceCynologist" -> sendText(chatId, CHOICE_KINOLOGIST);
                 default -> sendErrorMessage(chatId);
             }
         } else {
@@ -291,7 +299,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         try {
             execute(message);
         } catch (TelegramApiException e) {
-            // Обработайте исключение, если не удается отправить сообщение
+            //
         }
     }
 
@@ -319,21 +327,15 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
 
-
-    private void handleUserChoice(long chatId, String messageText, String shelterChoice) {
-        // Обработку выбора пользователя в зависимости от приюта
-        // Логика для каждого варианта
-    }
-
-    private String getShelterInfo(String shelterChoice) {
-        if ("catShelter".equals(shelterChoice)) {
-            return "Информация о приюте для кошек...";
-        } else if ("dogShelter".equals(shelterChoice)) {
-            return "Информация о приюте для собак...";
-        } else {
-            return "Неизвестный выбор приюта.";
-        }
-    }
+//    private String getShelterInfo(String shelterChoice) {
+//        if ("catShelter".equals(shelterChoice)) {
+//            return "Информация о приюте для кошек...";
+//        } else if ("dogShelter".equals(shelterChoice)) {
+//            return "Информация о приюте для собак...";
+//        } else {
+//            return "Неизвестный выбор приюта.";
+//        }
+//    }
     private void sendShelterInfo(long chatId, String shelterChoice) {
 //        SendMessage message = new SendMessage();
 //        message.setChatId(String.valueOf(chatId));
@@ -453,7 +455,9 @@ public class TelegramBot extends TelegramLongPollingBot {
         if ("catShelter".equals(shelterChoice)) {
             InlineKeyboardButton arrangementButton = new InlineKeyboardButton();
             arrangementButton.setText("Рекомендации по обустройству дома");
-            arrangementButton.setCallbackData("catHouse");
+
+            arrangementButton.setCallbackData("homeImprovement");
+
             row4.add(arrangementButton);
 
         } else if ("dogShelter".equals(shelterChoice)) {
@@ -486,16 +490,16 @@ public class TelegramBot extends TelegramLongPollingBot {
 
         if ("dogShelter".equals(shelterChoice)) {
             List<InlineKeyboardButton> row7 = new ArrayList<>();
-            InlineKeyboardButton dogBreederButton = new InlineKeyboardButton();
-            dogBreederButton.setText("Советы кинолога по первичному общению с собакой");
-            dogBreederButton.setCallbackData("dogBreeder");
-            row7.add(dogBreederButton);
+            InlineKeyboardButton cynologistButton = new InlineKeyboardButton();
+            cynologistButton.setText("Кинологи");
+            cynologistButton.setCallbackData("cynologist");
+            row7.add(cynologistButton);
 
             List<InlineKeyboardButton> row8 = new ArrayList<>();
-            InlineKeyboardButton recommendationsDogTrainersButton = new InlineKeyboardButton();
-            recommendationsDogTrainersButton.setText("Рекомендации по проверенным кинологам");
-            recommendationsDogTrainersButton.setCallbackData("recommendationsDogTrainers");
-            row8.add(recommendationsDogTrainersButton);
+            InlineKeyboardButton reasonsRefusalButton = new InlineKeyboardButton();
+            reasonsRefusalButton.setText("Причины отказа");
+            reasonsRefusalButton.setCallbackData("reasonsRefusal");
+            row8.add(reasonsRefusalButton);
 
             keyboard.add(row7);
             keyboard.add(row8);
@@ -596,18 +600,103 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
-    private String getReportInstructions(String shelterChoice) {
-        return "Инструкции по отправке отчета...";
-    }
 
-    private void callVolunteer(long chatId) {
+    private void homeImprovement(long chatId, String shelterChoice) {
         SendMessage message = new SendMessage();
         message.setChatId(String.valueOf(chatId));
-        message.setText("Неизвестная команда. Вызываю волонтера для помощи.");
+        message.setText("Выберете раздел:");
+
+        InlineKeyboardMarkup markupKeyboard = new InlineKeyboardMarkup();
+        List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
+
+        List<InlineKeyboardButton> row1 = new ArrayList<>();
+        if ("catShelter".equals(shelterChoice)) {
+            InlineKeyboardButton puppyButton = new InlineKeyboardButton();
+            puppyButton.setText("Котенок");
+            puppyButton.setCallbackData("puppyRecommendations");
+            row1.add(puppyButton);
+
+        } else if ("dogShelter".equals(shelterChoice)) {
+            InlineKeyboardButton puppyButton = new InlineKeyboardButton();
+            puppyButton.setText("Щенок");
+            puppyButton.setCallbackData("puppyRecommendations");
+            row1.add(puppyButton);
+        }
+
+
+        InlineKeyboardButton adultButton = new InlineKeyboardButton();
+        adultButton.setText("Взрослое животное");
+        adultButton.setCallbackData("oldRecommendations");
+        row1.add(adultButton);
+
+        List<InlineKeyboardButton> row2 = new ArrayList<>();
+        InlineKeyboardButton disabledButton = new InlineKeyboardButton();
+        disabledButton.setText("Животное с ограниченными возможностями");
+        disabledButton.setCallbackData("disabledRecommendations");
+        row2.add(disabledButton);
+
+        List<InlineKeyboardButton> row3 = new ArrayList<>();
+        InlineKeyboardButton backButton = new InlineKeyboardButton();
+        backButton.setText("Назад");
+        backButton.setCallbackData("backToShelterSelection");
+        row3.add(backButton);
+
+        keyboard.add(row1);
+        keyboard.add(row2);
+        keyboard.add(row3);
+        markupKeyboard.setKeyboard(keyboard);
+        message.setReplyMarkup(markupKeyboard);
+
         try {
             execute(message);
         } catch (TelegramApiException e) {
-//            log.error("Error occurred: " + e.getMessage());
+            //
+        }
+    }
+
+    private void cynologist(long chatId) {
+        SendMessage message = new SendMessage();
+        message.setChatId(String.valueOf(chatId));
+        message.setText("Выберете раздел:");
+
+        InlineKeyboardMarkup markupKeyboard = new InlineKeyboardMarkup();
+        List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
+
+        List<InlineKeyboardButton> row1 = new ArrayList<>();
+        InlineKeyboardButton tipsCynologistButton = new InlineKeyboardButton();
+        tipsCynologistButton.setText("Советы кинологов");
+        tipsCynologistButton.setCallbackData("tipsCynologist");
+        row1.add(tipsCynologistButton);
+
+        List<InlineKeyboardButton> row2 = new ArrayList<>();
+        InlineKeyboardButton choiceCynologistButton = new InlineKeyboardButton();
+        choiceCynologistButton.setText("Рекомендуемые кинологи");
+        choiceCynologistButton.setCallbackData("choiceCynologist");
+        row2.add(choiceCynologistButton);
+
+
+        keyboard.add(row1);
+        keyboard.add(row2);
+        markupKeyboard.setKeyboard(keyboard);
+        message.setReplyMarkup(markupKeyboard);
+
+        try {
+            execute(message);
+        } catch (TelegramApiException e) {
+            //
+        }
+    }
+
+
+    private void sendBecomeVolunteerInstructions(long chatId) {
+        SendMessage message = new SendMessage();
+        message.setChatId(String.valueOf(chatId));
+        message.setText(LEAVE_CONTACT_DETAILS);
+
+        try {
+            execute(message);
+        } catch (TelegramApiException e) {
+            //
         }
     }
 
