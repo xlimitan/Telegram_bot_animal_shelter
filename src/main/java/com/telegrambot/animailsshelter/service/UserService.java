@@ -4,9 +4,13 @@ import com.telegrambot.animailsshelter.model.User;
 import com.telegrambot.animailsshelter.repository.UserRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * Сервис для работы с пользователем
  */
@@ -29,8 +33,8 @@ public class UserService {
      * @return возвращаемая сущность
      */
 
-    public User saveBotUser(long chatId, String firstName, String lastName, String userName) {
-        User user = new User(chatId, firstName, lastName, userName);
+    public User saveBotUser(long chatId, String firstName, String lastName, String userName, String phoneNumber,String eMail) {
+        User user = new User(chatId, firstName, lastName, userName, phoneNumber,eMail);
         return userRepository.save(user);
     }
     /**
@@ -87,5 +91,16 @@ public class UserService {
         }
         userRepository.deleteById(chatId);
         return true;
+    }
+
+    public void savePhoneUser(long chatId, String message){
+        User user = userRepository.findByChatId(chatId).orElseThrow();
+        Pattern pattern = Pattern.compile("[0-9\\+]{12}+");
+        Matcher matcher = pattern.matcher(message);
+        if (matcher.find()) {
+            user.setPhoneNumber(message);
+            userRepository.save(user);
+            SendMessage sendMessage = new SendMessage();
+        }
     }
 }

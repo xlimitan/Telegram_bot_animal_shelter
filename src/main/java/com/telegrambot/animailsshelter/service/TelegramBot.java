@@ -5,7 +5,6 @@ import com.telegrambot.animailsshelter.config.BotConfig;
 import com.telegrambot.animailsshelter.model.User;
 import com.telegrambot.animailsshelter.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.glassfish.grizzly.http.util.TimeStamp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -20,7 +19,6 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.*;
 
-import static com.telegrambot.animailsshelter.config.CommandType.*;
 import static com.telegrambot.animailsshelter.config.Information.*;
 
 
@@ -37,9 +35,11 @@ public class TelegramBot extends TelegramLongPollingBot {
 @Autowired
     private UserRepository userRepository;
     private final Map<Long, String> userShelterChoiceMap;
+    private final UserService userService;
 
-    public TelegramBot(BotConfig config) {
+    public TelegramBot(BotConfig config, UserService userService) {
         this.config = config;
+        this.userService = userService;
         this.userShelterChoiceMap = new HashMap<>();
     }
 
@@ -51,10 +51,17 @@ public class TelegramBot extends TelegramLongPollingBot {
      */
 
     public void onUpdateReceived(Update update) {
+        Message message = update.getMessage();
         if (update.hasCallbackQuery()) {
             handleCallbackQuery(update.getCallbackQuery());
         } else if (update.hasMessage() && update.getMessage().hasText()) {
             handleMessage(update.getMessage());
+        }
+        if (update.getMessage().getText().startsWith("+7")){
+            userService.savePhoneUser(message.getChatId(), message.getText());
+            sendText(message.getChatId(), "Номер сохранён!");
+        } else if (update.hasCallbackQuery()) {
+            handleCallbackQuery(update.getCallbackQuery());
         }
     }
 
@@ -319,7 +326,8 @@ public class TelegramBot extends TelegramLongPollingBot {
             user.setFirstName(chat.getFirstName());
             user.setLastName(chat.getLastName());
             user.setUserName(chat.getUserName());
-            user.getRegisteredAt();
+            user.setPhoneNumber(user.getPhoneNumber());
+            user.seteMail(user.geteMail());
 
             userRepository.save(user);
 //            log.info("User saved: " + user);

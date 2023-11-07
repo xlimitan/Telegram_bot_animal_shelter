@@ -22,11 +22,8 @@ public class AnimalOwnerController {
     // добавление Владельца животного
     @PostMapping("/{id}/{name}/{phoneNumber}/{eMail}/{trialPeriod}")
     public void AnimalOwnerSave(@PathVariable long id,
-                                @PathVariable String name,
-                                @PathVariable String phoneNumber,
-                                @PathVariable String eMail,
                                 @PathVariable boolean trialPeriod) {
-        addService.animalOwnerSave(id,name, phoneNumber, eMail, trialPeriod);
+        addService.animalOwnerSave(id, trialPeriod);
     }
     //поиск по Id Владельца животного
     @GetMapping("/{id}")
