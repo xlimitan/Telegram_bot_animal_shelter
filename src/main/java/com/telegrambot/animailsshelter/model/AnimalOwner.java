@@ -16,19 +16,10 @@ public class AnimalOwner {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    @Column(name = "name")
-    private String name;
-    @Column(name = "phone_number")
-    private String phoneNumber;
-    @Column(name = "e_mail")
-    private String eMail;
     @Column(name = "trial_period")
     private boolean trialPeriod;
-    public AnimalOwner(long id,String name, String phoneNumber, String eMail, boolean trialPeriod) {
+    public AnimalOwner(long id, boolean trialPeriod) {
         this.id = id;
-        this.name = name;
-        this.phoneNumber = phoneNumber;
-        this.eMail = eMail;
         this.trialPeriod = trialPeriod;
     }
 
@@ -39,21 +30,18 @@ public class AnimalOwner {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         AnimalOwner that = (AnimalOwner) o;
-        return id == that.id && trialPeriod == that.trialPeriod && Objects.equals(name, that.name) && Objects.equals(phoneNumber, that.phoneNumber) && Objects.equals(eMail, that.eMail);
+        return id == that.id && trialPeriod == that.trialPeriod;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, phoneNumber, eMail, trialPeriod);
+        return Objects.hash(id, trialPeriod);
     }
 
     @Override
     public String toString() {
         return "AnimalOwner{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
-                ", phoneNumber='" + phoneNumber + '\'' +
-                ", eMail='" + eMail + '\'' +
                 ", trialPeriod=" + trialPeriod +
                 '}';
     }

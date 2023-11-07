@@ -1,11 +1,9 @@
 package com.telegrambot.animailsshelter.model;
 
+import liquibase.pro.packaged.S;
 import org.glassfish.grizzly.http.util.TimeStamp;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 /**
  * Класс User представляет информацию о пользователе бота. Эта информация сохраняется в базе данных.
@@ -21,17 +19,38 @@ public class User {
     private String lastName;
 
     private String userName;
+    @Column(name = "phone_number")
+    private String phoneNumber;
+    @Column(name = "e_Mail")
+    private String eMail;
 
-    private TimeStamp registeredAt;
 
     public User() {
     }
 
-    public User( Long chatId, String firstName, String lastName, String userName) {
+    public User( Long chatId, String firstName, String lastName, String userName,String phoneNumber,String eMail) {
         setChatId(chatId);
         setFirstName(firstName);
         setLastName(lastName);
         setUserName(userName);
+        setPhoneNumber(phoneNumber);
+        seteMail(eMail);
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String geteMail() {
+        return eMail;
+    }
+
+    public void seteMail(String eMail) {
+        this.eMail = eMail;
     }
 
     public Long getChatId() {
@@ -66,13 +85,6 @@ public class User {
         this.userName = userName;
     }
 
-    public TimeStamp getRegisteredAt() {
-        return registeredAt;
-    }
-
-    public void setRegisteredAt(TimeStamp registeredAt) {
-        this.registeredAt = registeredAt;
-    }
 
     @Override
     public String toString() {
@@ -81,7 +93,6 @@ public class User {
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", userName='" + userName + '\'' +
-                /*", registeredAt=" + registeredAt +*/
                 '}';
     }
 }

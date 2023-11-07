@@ -46,8 +46,8 @@ public class AddService {
 * @param eMail электронная почта
 * @param trialPeriod испытательный срок
 */
-    public AnimalOwner animalOwnerSave(long id,String name, String phoneNumber,  String eMail, boolean trialPeriod) {
-        AnimalOwner animalOwner = new AnimalOwner(id,name, phoneNumber, eMail, trialPeriod);
+    public AnimalOwner animalOwnerSave(long id, boolean trialPeriod) {
+        AnimalOwner animalOwner = new AnimalOwner(id,trialPeriod);
         return animalOwnerRepository.save(animalOwner);
     }
 /**
@@ -56,9 +56,9 @@ public class AddService {
 * @param feelings состояние животного
 * @param check проверялось ли животное
 */
-    public PetReport petReportSave(long id,String diet, String feelings, boolean check) {
+    public PetReport petReportSave(long id, String report) {
         LocalDateTime localDateTime = LocalDateTime.now();
-        PetReport petReport = new PetReport(id,diet, feelings, check, localDateTime);
+        PetReport petReport = new PetReport(id, report, localDateTime);
         return petReportRepository.save(petReport);
     }
 /**

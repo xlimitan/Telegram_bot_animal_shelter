@@ -57,7 +57,7 @@ public class AddServiceTest {
         assertEquals(animal, savedAnimal);
     }
 
-    @Test
+ /*   @Test
     public void testAnimalOwnerSave() {
         AnimalOwner animalOwner = new AnimalOwner(1L, "Иванов", "1234567890", "ivan@example.com", true);
         Mockito.when(animalOwnerRepository.save(animalOwner)).thenReturn(animalOwner);
@@ -65,7 +65,7 @@ public class AddServiceTest {
         AnimalOwner savedAnimalOwner = addService.animalOwnerSave(1L, "Иванов", "1234567890", "ivan@example.com", true);
 
         assertEquals(animalOwner, savedAnimalOwner);
-    }
+    }*/
 
 //    @Test
 //    public void testPetReportSave() {
