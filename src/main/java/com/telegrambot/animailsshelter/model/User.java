@@ -4,6 +4,8 @@ import liquibase.pro.packaged.S;
 import org.glassfish.grizzly.http.util.TimeStamp;
 
 import javax.persistence.*;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Класс User представляет информацию о пользователе бота. Эта информация сохраняется в базе данных.
@@ -23,8 +25,9 @@ public class User {
     private String phoneNumber;
     @Column(name = "e_Mail")
     private String eMail;
-
-
+     @OneToOne
+     @JoinColumn(name = "animal_id")
+     private Animal animalId;
     public User() {
     }
 
@@ -35,6 +38,15 @@ public class User {
         setUserName(userName);
         setPhoneNumber(phoneNumber);
         seteMail(eMail);
+    }
+
+
+    public Animal getAnimalId() {
+        return animalId;
+    }
+
+    public void setAnimalId(Animal animalId) {
+        this.animalId = animalId;
     }
 
     public String getPhoneNumber() {
