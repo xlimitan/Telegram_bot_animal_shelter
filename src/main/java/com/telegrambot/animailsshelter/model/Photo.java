@@ -15,6 +15,9 @@ public class Photo {
     private long fileSize;
     private String mediaType;
     private byte[] data;
+
+    @OneToOne
+    private PetReport petReport;
     @OneToOne
     private Animal animal;
     public Photo(Long id, String filePath, long fileSize, String mediaType, byte[] data) {

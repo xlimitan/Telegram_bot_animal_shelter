@@ -25,10 +25,14 @@ public class PetReport {
     @Column(name = "correct")
     private boolean correct;
 
-
     @OneToOne
-    @JoinColumn(name = "animalowner_id")
-    private AnimalOwner animalOwner;
+    @JoinColumn(name = "photo_id")
+    private Photo photo;
+
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User userId;
 
     public PetReport(long id,String report, LocalDateTime date) {
         this.id = id;
@@ -44,12 +48,12 @@ public class PetReport {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         PetReport petReport = (PetReport) o;
-        return id == petReport.id && Objects.equals(report, petReport.report) && Objects.equals(date, petReport.date) && Objects.equals(animalOwner, petReport.animalOwner);
+        return id == petReport.id && Objects.equals(report, petReport.report) && Objects.equals(date, petReport.date) && Objects.equals(userId, petReport.userId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, report, date, animalOwner);
+        return Objects.hash(id, report, date, userId);
     }
 
     @Override
@@ -58,7 +62,7 @@ public class PetReport {
                 "id=" + id +
                 "report=" + report +
                 ", date=" + date +
-                ", animalOwner=" + animalOwner +
+                ", animalOwner=" + userId +
                 '}';
     }
 }

@@ -36,10 +36,14 @@ public class TelegramBot extends TelegramLongPollingBot {
     private UserRepository userRepository;
     private final Map<Long, String> userShelterChoiceMap;
     private final UserService userService;
+    private final ReportService reportService;
+    private final AddService addService;
 
-    public TelegramBot(BotConfig config, UserService userService) {
+    public TelegramBot(BotConfig config, UserService userService, ReportService reportService, AddService addService) {
         this.config = config;
         this.userService = userService;
+        this.reportService = reportService;
+        this.addService = addService;
         this.userShelterChoiceMap = new HashMap<>();
     }
 
@@ -60,9 +64,13 @@ public class TelegramBot extends TelegramLongPollingBot {
         if (update.getMessage().getText().startsWith("+7")){
             userService.savePhoneUser(message.getChatId(), message.getText());
             sendText(message.getChatId(), "Номер сохранён!");
-        } else if (update.hasCallbackQuery()) {
-            handleCallbackQuery(update.getCallbackQuery());
-        }
+        }else if (update.hasMessage() && update.getMessage().hasText()) {
+            handleMessage(update.getMessage());}
+        if (update.getMessage().getText().startsWith("Отчёт")) {
+            addService.petReportSave(message.getChatId(), message.getText());
+            sendText(message.getChatId(), "отчёт отправлен");
+        }else if (update.hasMessage() && update.getMessage().hasText()) {
+            handleMessage(update.getMessage());}
     }
 
     private void handleCallbackQuery(CallbackQuery callbackQuery) {
@@ -83,7 +91,9 @@ public class TelegramBot extends TelegramLongPollingBot {
                 case "contact" -> sendText(chatId, SECURITY_DATA);
                 case "safety" -> sendText(chatId, SAFETY_TECHNICAL);
                 case "feedback" -> sendText(chatId, LEAVE_CONTACT_DETAILS);
-                case "rule" -> sendText(chatId, RULES_OF_MEETING_A_PET);
+                case "rule" -> {sendText(chatId, RULES_OF_MEETING_A_PET);
+                    sendHowToAdoptInfoForShelter(chatId,userShelterChoiceMap.get(chatId));
+                   }
                 case "documents" -> sendText(chatId, REQUIRED_DOCUMENTS);
                 case "transport" -> sendText(chatId, RECOMMENDATIONS_TRANSPORTATION);
                 case "homeImprovement" -> homeImprovement(chatId, userShelterChoiceMap.get(chatId));

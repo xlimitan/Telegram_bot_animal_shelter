@@ -37,11 +37,11 @@ public class ReportService{
     }
 
 
-    private void acceptAdoptionReport(long chatId, String text, List<PhotoSize> photos) {
+    public void acceptAdoptionReport(long chatId, String text, List<PhotoSize> photos) {
         User user = userRepository.findById(chatId).orElse(null);
 
         if (user != null) {
-            if (user.getIdAnimals() != null) {
+            if (user.getAnimalId() != null) {
 
                 if (isValidAdoptionReport(text)) {
                     saveAdoptionReport(chatId, text, photos);
@@ -60,6 +60,7 @@ public class ReportService{
 
     private boolean isValidAdoptionReport(String reportText) {
         // Проверка на правильность и полноценность отчета
+        return true;
     }
 
     private void saveAdoptionReport(Long animalId, String reportText, List<PhotoSize> photos) {

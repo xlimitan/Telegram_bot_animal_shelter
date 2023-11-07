@@ -8,7 +8,8 @@ first_name varchar(20),
 last_name varchar(20),
 user_name varchar(20),
 phone_number varchar(20),
-e_Mail varchar(100)
+e_Mail varchar(100),
+animal_id int8
 );
 
 create table if not exists animal(
@@ -31,7 +32,8 @@ id bigserial primary key,
 report text,
 date timestamp,
 correct boolean,
-animalowner_id int8
+user_id int8,
+photo_id int8
 );
 
 create table if not exists shelter(
@@ -53,5 +55,6 @@ file_path varchar(1024),
 file_size bigserial,
 media_type varchar(1024),
 data bytea,
+pet_report_id int8,
 animal_id int8
 )
