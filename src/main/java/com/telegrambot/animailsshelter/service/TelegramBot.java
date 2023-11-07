@@ -18,10 +18,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.telegrambot.animailsshelter.config.CommandType.*;
 import static com.telegrambot.animailsshelter.config.Information.*;
@@ -52,44 +49,6 @@ public class TelegramBot extends TelegramLongPollingBot {
      *
      * @param update Объект, содержащий информацию об обновлении.
      */
-//    @Override
-//    public void onUpdateReceived(Update update) {
-//        if (update.hasCallbackQuery()) {
-//            CallbackQuery callbackQuery = update.getCallbackQuery();
-//            String callbackData = callbackQuery.getData();
-//            long chatId = callbackQuery.getMessage().getChatId();
-//
-//            if (userShelterChoiceMap.containsKey(chatId)) {
-//                if (callbackData.equals("info")) {
-//                    sendShelterInfo(chatId, userShelterChoiceMap.get(chatId));
-//                } else if (callbackData.equals("adopt")) {
-//                    sendHowToAdoptInfoForShelter(chatId, userShelterChoiceMap.get(chatId));
-//                } else if (callbackData.equals("report")) {
-//                    sendReportInstructions(chatId, userShelterChoiceMap.get(chatId));
-//                } else if (callbackData.equals("volunteer")) {
-//                    callVolunteer(chatId);
-//                }
-//            } else {
-//                if (callbackData.equals("backToShelterSelection")) {
-//                    userShelterChoiceMap.remove(chatId);
-//                    sendWelcomeMessage(chatId);
-//                } else if (callbackData.equals("catShelter") || callbackData.equals("dogShelter")) {
-//                    userShelterChoiceMap.put(chatId, callbackData);
-//                    sendMenuOptions(chatId);
-//                } else {
-//                    sendErrorMessage(chatId);
-//                }
-//            }
-//        } else if (update.hasMessage() && update.getMessage().hasText()) {
-//            long chatId = update.getMessage().getChatId();
-//            String messageText = update.getMessage().getText();
-//
-//            if (messageText.equals("/start")) {
-//                sendWelcomeMessage(chatId);
-//                registerUser(update.getMessage());
-//            }
-//        }
-//    }
 
     public void onUpdateReceived(Update update) {
         if (update.hasCallbackQuery()) {
@@ -128,7 +87,20 @@ public class TelegramBot extends TelegramLongPollingBot {
                 case "reasonsRefusal" -> sendText(chatId, REASONS_FAILURE);
                 case "tipsCynologist" -> sendText(chatId, TIPS_KINOLOGIST);
                 case "choiceCynologist" -> sendText(chatId, CHOICE_KINOLOGIST);
-                default -> sendErrorMessage(chatId);
+                case "backToShelterSelection" -> {
+                    userShelterChoiceMap.remove(chatId);
+                    sendWelcomeMessage(chatId);
+                }
+                case "back" -> {
+                    sendMenuOptions(chatId);
+                }
+                default -> {
+                    if (Arrays.asList("catShelter", "dogShelter").contains(callbackData)) {
+                        sendErrorMessageAboutChoosingShelter(chatId);
+                    } else {
+                        sendErrorMessage(chatId);
+                    }
+                }
             }
         } else {
             switch (callbackData) {
@@ -140,7 +112,10 @@ public class TelegramBot extends TelegramLongPollingBot {
                     userShelterChoiceMap.put(chatId, callbackData);
                     sendMenuOptions(chatId);
                 }
-                default -> sendErrorMessage(chatId);
+                case "back" -> {
+                    sendWelcomeMessage(chatId);
+                }
+                default -> sendErrorMessageAboutChoosingShelter(chatId);
             }
         }
     }
@@ -167,13 +142,38 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
+    private void sendErrorMessage(long chatId) {
+        SendMessage message = new SendMessage();
+        message.setChatId(String.valueOf(chatId));
+        message.setText("Ошибка");
+
+        InlineKeyboardMarkup markupKeyboard = new InlineKeyboardMarkup();
+        List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
+
+        List<InlineKeyboardButton> row1 = new ArrayList<>();
+        InlineKeyboardButton backButton = new InlineKeyboardButton();
+        backButton.setText("Назад");
+        backButton.setCallbackData("back");
+        row1.add(backButton);
+
+        keyboard.add(row1);
+        markupKeyboard.setKeyboard(keyboard);
+        message.setReplyMarkup(markupKeyboard);
+
+        try {
+            execute(message);
+        } catch (TelegramApiException e) {
+
+        }
+    }
+
 
     /**
      * Отправляет сообщение об ошибке пользователю.
      *
      * @param chatId Идентификатор чата, куда отправить сообщение.
      */
-    private void sendErrorMessage(long chatId) {
+    private void sendErrorMessageAboutChoosingShelter(long chatId) {
         SendMessage message = new SendMessage();
         message.setChatId(String.valueOf(chatId));
         message.setText("Вы уже выбрали приют. Чтобы выбрать другой приют, вернитесь к предыдущему шагу выбора приюта.");
@@ -194,7 +194,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         try {
             execute(message);
         } catch (TelegramApiException e) {
-
+            //
         }
     }
 
@@ -327,84 +327,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
 
-//    private String getShelterInfo(String shelterChoice) {
-//        if ("catShelter".equals(shelterChoice)) {
-//            return "Информация о приюте для кошек...";
-//        } else if ("dogShelter".equals(shelterChoice)) {
-//            return "Информация о приюте для собак...";
-//        } else {
-//            return "Неизвестный выбор приюта.";
-//        }
-//    }
-    private void sendShelterInfo(long chatId, String shelterChoice) {
-//        SendMessage message = new SendMessage();
-//        message.setChatId(String.valueOf(chatId));
-//
-//        String shelterInfo = getShelterInfo(shelterChoice);
-//        message.setText(shelterInfo);
-//
-//        // Создаем разметку для кнопок
-//        InlineKeyboardMarkup markupKeyboard = new InlineKeyboardMarkup();
-//        List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
-//
-//        List<InlineKeyboardButton> row1 = new ArrayList<>();
-//        InlineKeyboardButton addressButton = new InlineKeyboardButton();
-//        addressButton.setText(ADDRESS.getDescription());
-//        addressButton.setCallbackData(ADDRESS.getCommand());
-//        row1.add(addressButton);
-//
-//        List<InlineKeyboardButton> row2 = new ArrayList<>();
-//        InlineKeyboardButton directionsButton = new InlineKeyboardButton();
-//        directionsButton.setText("Схема проезда до приюта");
-//        directionsButton.setCallbackData("shelterDirections");
-//        row2.add(directionsButton);
-//
-//        List<InlineKeyboardButton> row3 = new ArrayList<>();
-//        InlineKeyboardButton scheduleButton = new InlineKeyboardButton();
-//        scheduleButton.setText("Расписание работы приюта");
-//        scheduleButton.setCallbackData("shelterSchedule");
-//        row3.add(scheduleButton);
-//
-//        List<InlineKeyboardButton> row4 = new ArrayList<>();
-//        InlineKeyboardButton contactButton = new InlineKeyboardButton();
-//        contactButton.setText("Контактные данные охраны для оформления пропуска");
-//        contactButton.setCallbackData("shelterContact");
-//        row4.add(contactButton);
-//
-//        List<InlineKeyboardButton> row5 = new ArrayList<>();
-//        InlineKeyboardButton safetyButton = new InlineKeyboardButton();
-//        safetyButton.setText("Рекомендации о технике безопасности на территории приюта для посетителей");
-//        safetyButton.setCallbackData("shelterSafety");
-//        row5.add(safetyButton);
-//
-//        List<InlineKeyboardButton> row6 = new ArrayList<>();
-//        InlineKeyboardButton feedbackButton = new InlineKeyboardButton();
-//        feedbackButton.setText("Оставить контактные данные для обратной связи");
-//        feedbackButton.setCallbackData("shelterFeedback");
-//        row6.add(feedbackButton);
-//
-//        List<InlineKeyboardButton> row7 = new ArrayList<>();
-//        InlineKeyboardButton volunteerButton = new InlineKeyboardButton();
-//        volunteerButton.setText(VOLUNTEER.getDescription());
-//        volunteerButton.setCallbackData(VOLUNTEER.getCommand());
-//        row7.add(volunteerButton);
-//
-//        keyboard.add(row1);
-//        keyboard.add(row2);
-//        keyboard.add(row3);
-//        keyboard.add(row4);
-//        keyboard.add(row5);
-//        keyboard.add(row6);
-//        keyboard.add(row7);
-//        markupKeyboard.setKeyboard(keyboard);
-//        message.setReplyMarkup(markupKeyboard);
-//
-//        try {
-//            execute(message);
-//        } catch (TelegramApiException e) {
-//            //
-//        }
-    }
+
 
     private void sendHowToAdoptInfoForShelter(long chatId, String shelterChoice) {
         //String shelterChoice = userShelterChoiceMap.get(chatId);
@@ -679,19 +602,6 @@ public class TelegramBot extends TelegramLongPollingBot {
         keyboard.add(row2);
         markupKeyboard.setKeyboard(keyboard);
         message.setReplyMarkup(markupKeyboard);
-
-        try {
-            execute(message);
-        } catch (TelegramApiException e) {
-            //
-        }
-    }
-
-
-    private void sendBecomeVolunteerInstructions(long chatId) {
-        SendMessage message = new SendMessage();
-        message.setChatId(String.valueOf(chatId));
-        message.setText(LEAVE_CONTACT_DETAILS);
 
         try {
             execute(message);
