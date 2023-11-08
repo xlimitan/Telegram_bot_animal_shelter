@@ -1,6 +1,7 @@
 package com.telegrambot.animailsshelter.controller;
 
 import com.telegrambot.animailsshelter.model.PetReport;
+import com.telegrambot.animailsshelter.model.User;
 import com.telegrambot.animailsshelter.model.Volunteer;
 import com.telegrambot.animailsshelter.repository.PetReportRepository;
 import com.telegrambot.animailsshelter.service.AddService;
@@ -20,11 +21,12 @@ public class PetReportController {
         this.petReportRepository = petReportRepository;
     }
     // добавление отчёта о животном
-    @PostMapping("/{report}")
+   /* @PostMapping("/{report}")
     public void PetReportSave(@PathVariable long id,
-                              @PathVariable String report) {
-        addService.petReportSave(id,report);
-    }
+                              @PathVariable String report,
+                              @PathVariable User userId) {
+        addService.petReportSave(report, id);
+    }*/
     //поиск всех отчётов о животных
     @GetMapping("/all")
     public List<PetReport> findAll() {
