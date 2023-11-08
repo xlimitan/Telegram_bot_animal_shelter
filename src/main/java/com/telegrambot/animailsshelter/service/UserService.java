@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
@@ -92,9 +93,9 @@ public class UserService {
         userRepository.deleteById(chatId);
         return true;
     }
-
-    public void savePhoneUser(long chatId, String message){
-        User user = userRepository.findByChatId(chatId).orElseThrow();
+    @Transactional
+    public void savePhoneUser(long userId, String message){
+        User user = userRepository.getReferenceById(userId);
         Pattern pattern = Pattern.compile("[0-9\\+]{12}+");
         Matcher matcher = pattern.matcher(message);
         if (matcher.find()) {

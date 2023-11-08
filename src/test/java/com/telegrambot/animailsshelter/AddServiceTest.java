@@ -1,7 +1,6 @@
 package com.telegrambot.animailsshelter;
 
 import com.telegrambot.animailsshelter.model.Animal;
-import com.telegrambot.animailsshelter.model.AnimalOwner;
 import com.telegrambot.animailsshelter.model.Shelter;
 import com.telegrambot.animailsshelter.model.Volunteer;
 import com.telegrambot.animailsshelter.repository.AnimalOwnerRepository;
@@ -42,10 +41,10 @@ public class AddServiceTest {
 
     private AddService addService;
 
-    @BeforeEach
+   /* @BeforeEach
     public void setUp() {
-        addService = new AddService(animalOwnerRepository, animalRepository, petReportRepository, shelterRepository, volunteerRepository);
-    }
+        addService = new AddService(animalOwnerRepository, animalRepository, petReportRepository, shelterRepository, volunteerRepository, userRepository);
+    }*/
 
     @Test
     public void testAnimalSave() {

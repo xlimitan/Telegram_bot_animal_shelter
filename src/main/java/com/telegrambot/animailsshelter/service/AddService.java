@@ -16,17 +16,19 @@ public class AddService {
     private final PetReportRepository petReportRepository;
     private final ShelterRepository shelterRepository;
     private final VolunteerRepository volunteerRepository;
+    private final UserRepository userRepository;
 
     public AddService(AnimalOwnerRepository animalOwnerRepository,
                       AnimalRepository animalRepository,
                       PetReportRepository petReportRepository,
                       ShelterRepository shelterRepository,
-                      VolunteerRepository volunteerRepository) {
+                      VolunteerRepository volunteerRepository, UserRepository userRepository) {
         this.animalOwnerRepository = animalOwnerRepository;
         this.animalRepository = animalRepository;
         this.petReportRepository = petReportRepository;
         this.shelterRepository = shelterRepository;
         this.volunteerRepository = volunteerRepository;
+        this.userRepository = userRepository;
     }
 /**
  * Метод сохраняет животных в БД
@@ -56,9 +58,10 @@ public class AddService {
 * @param feelings состояние животного
 * @param check проверялось ли животное
 */
-    public PetReport petReportSave(long id, String report) {
+    public PetReport petReportSave(User user, String report) {
+        userRepository.getReferenceById(user.getChatId());
         LocalDateTime localDateTime = LocalDateTime.now();
-        PetReport petReport = new PetReport(id, report, localDateTime);
+        PetReport petReport = new PetReport(user, report, localDateTime);
         return petReportRepository.save(petReport);
     }
 /**

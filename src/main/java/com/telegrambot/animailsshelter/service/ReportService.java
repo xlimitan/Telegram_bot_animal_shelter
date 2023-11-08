@@ -4,6 +4,7 @@ import ch.qos.logback.classic.Logger;
 import com.telegrambot.animailsshelter.config.BotConfig;
 import com.telegrambot.animailsshelter.model.PetReport;
 import com.telegrambot.animailsshelter.model.User;
+import com.telegrambot.animailsshelter.repository.PetReportRepository;
 import com.telegrambot.animailsshelter.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.*;
 
+import javax.transaction.Transactional;
 import java.util.*;
 
 @Component
@@ -22,10 +24,12 @@ public class ReportService{
     private UserRepository userRepository;
     private final Map<Long, String> userShelterChoiceMap;
     private final UserService userService;
+    private final PetReportRepository petReportRepository;
 
-    public ReportService(BotConfig config, UserService userService) {
+    public ReportService(BotConfig config, UserService userService, PetReportRepository petReportRepository) {
         this.config = config;
         this.userService = userService;
+        this.petReportRepository = petReportRepository;
         this.userShelterChoiceMap = new HashMap<>();
     }
 
@@ -35,27 +39,32 @@ public class ReportService{
         message.setChatId(String.valueOf(chatId));
         message.setText(text);
     }
-
-
-    public void acceptAdoptionReport(long chatId, String text, List<PhotoSize> photos) {
-        User user = userRepository.findById(chatId).orElse(null);
-
+    @Transactional
+    public void acceptAdoptionReport(Long userId, String text, List<PhotoSize> photos) {
+        User user = userRepository.getReferenceById(userId);
+        PetReport petReport = new PetReport();
+        petReport.setId(petReport.getId());
+        petReport.setUser(petReport.getUser());
+        petReport.setReport(petReport.getReport());
+        petReport.setCorrect(petReport.isCorrect());
+        petReport.setPhoto(petReport.getPhoto());
         if (user != null) {
             if (user.getAnimalId() != null) {
 
                 if (isValidAdoptionReport(text)) {
-                    saveAdoptionReport(chatId, text, photos);
+                    saveAdoptionReport(userId, text, photos);
 
-                    sendText(chatId, "Отчет успешно отправлен. Он будет рассмотрен волонтером.");
+                    sendText(userId, "Отчет успешно отправлен. Он будет рассмотрен волонтером.");
                 } else {
-                    sendText(chatId, "Отчет содержит некорректные данные. Пожалуйста, убедитесь, что ваши данные верны.");
+                    sendText(userId, "Отчет содержит некорректные данные. Пожалуйста, убедитесь, что ваши данные верны.");
                 }
             } else {
-                sendText(chatId, "Извините, вы не являетесь усыновителем. Эта функция доступна только усыновителям.");
+                sendText(userId, "Извините, вы не являетесь усыновителем. Эта функция доступна только усыновителям.");
             }
         } else {
-            sendText(chatId, "Вы не зарегистрированы в нашей системе. Пожалуйста, начните с команды /start.");
+            sendText(userId, "Вы не зарегистрированы в нашей системе. Пожалуйста, начните с команды /start.");
         }
+        petReportRepository.save(petReport);
     }
 
     private boolean isValidAdoptionReport(String reportText) {
