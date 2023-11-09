@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
  * Интерфейс PetReportRepository представляет репозиторий для управления информацией об отчётах животных.
  */
 public interface PetReportRepository extends JpaRepository<PetReport,Long> {
-    PetReport findByUserIdAndDate(Long id, LocalDate date);
+    PetReport findByUser_ChatIdAndDate(Long chatId, LocalDate date);
 
     @Query(value = "UPDATE public.pet_report set report =:report WHERE id =:id ", nativeQuery = true)
     void saveText(long id, String report);

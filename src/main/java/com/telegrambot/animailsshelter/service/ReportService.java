@@ -79,8 +79,8 @@ public class ReportService{
         // Если столбец равен false отправить уведомление о том, что отчет не принят
     }
 
-    public void saveTextReport(long id, String text){
-        PetReport petReport = petReportRepository.findByUserIdAndDate(id, LocalDate.now());
+    public void saveTextReport(long chatId, String text){
+        PetReport petReport = petReportRepository.findByUser_ChatIdAndDate(chatId, LocalDate.now());
         petReportRepository.saveText(petReport.getId(), text);
     }
 }

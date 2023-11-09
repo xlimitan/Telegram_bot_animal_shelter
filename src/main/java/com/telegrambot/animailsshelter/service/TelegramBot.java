@@ -73,7 +73,7 @@ public class TelegramBot extends TelegramLongPollingBot {
             sendText(message.getChatId(), "Номер сохранён!");
         }
          if (update.hasMessage() && update.getMessage().getText().startsWith("Отчёт")) {
-             if (petReportRepository.findByUserIdAndDate(message.getChatId(), LocalDate.now()) == null) {
+             if (petReportRepository.findByUser_ChatIdAndDate(message.getChatId(), LocalDate.now()) == null) {
                  addService.petReportSave(user, message.getText());
                  sendText(message.getChatId(), "Отчёт сохранён");
              } else {
