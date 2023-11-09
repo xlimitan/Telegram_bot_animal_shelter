@@ -2,6 +2,7 @@ package com.telegrambot.animailsshelter.service;
 
 import ch.qos.logback.classic.Logger;
 import com.telegrambot.animailsshelter.config.BotConfig;
+import com.telegrambot.animailsshelter.model.PetReport;
 import com.telegrambot.animailsshelter.model.User;
 import com.telegrambot.animailsshelter.repository.PetReportRepository;
 import com.telegrambot.animailsshelter.repository.UserRepository;
@@ -18,6 +19,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.time.LocalDate;
 import java.util.*;
 
 import static com.telegrambot.animailsshelter.config.Information.*;
@@ -58,19 +60,26 @@ public class TelegramBot extends TelegramLongPollingBot {
      */
 
     public void onUpdateReceived(Update update) {
+        Long chatId = update.getMessage().getChatId();
+        User user = userRepository.findById(chatId).orElse(null);
         Message message = update.getMessage();
         if (update.hasCallbackQuery()) {
             handleCallbackQuery(update.getCallbackQuery());
         } else if (update.hasMessage() && update.getMessage().hasText()) {
             handleMessage(update.getMessage());
         }
-        if (petReportRepository.findById(message.getChatId()).isEmpty() && update.hasMessage() && update.getMessage().getText().startsWith("+7")) {
+        if (update.hasMessage() && update.getMessage().getText().startsWith("+7")) {
             userService.savePhoneUser(message.getChatId(), message.getText());
             sendText(message.getChatId(), "Номер сохранён!");
         }
-        if (update.hasMessage() && update.getMessage().getText().startsWith("Отчёт")) {
-            addService.petReportSave(userRepository.getReferenceById(update.getMessage().getChatId()), message.getText());
-            sendText(message.getChatId(),"Отчёт сохранён");
+         if (update.hasMessage() && update.getMessage().getText().startsWith("Отчёт")) {
+             if (petReportRepository.findByUserIdAndDate(message.getChatId(), LocalDate.now()) == null) {
+                 addService.petReportSave(user, message.getText());
+                 sendText(message.getChatId(), "Отчёт сохранён");
+             } else {
+                 reportService.saveTextReport(message.getChatId(),message.getText());
+                 sendText(message.getChatId(), "Отчёт изменён");
+             }
         }
     }
 

@@ -13,6 +13,8 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.*;
 
 import javax.transaction.Transactional;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Component
@@ -40,30 +42,23 @@ public class ReportService{
         message.setText(text);
     }
     @Transactional
-    public void acceptAdoptionReport(Long userId, String text, List<PhotoSize> photos) {
-        User user = userRepository.getReferenceById(userId);
-        PetReport petReport = new PetReport();
-        petReport.setId(petReport.getId());
-        petReport.setUser(petReport.getUser());
-        petReport.setReport(petReport.getReport());
-        petReport.setCorrect(petReport.isCorrect());
-        petReport.setPhoto(petReport.getPhoto());
-        if (user != null) {
-            if (user.getAnimalId() != null) {
-
+    public void acceptAdoptionReport(Long id, User user, String text, List<PhotoSize> photos) {
+        userRepository.findById(user.getChatId());
+        LocalDateTime localDateTime = LocalDateTime.now();
+        if (user.getChatId() != null) {
                 if (isValidAdoptionReport(text)) {
-                    saveAdoptionReport(userId, text, photos);
+                    saveAdoptionReport(user.getChatId(), text, photos);
 
-                    sendText(userId, "Отчет успешно отправлен. Он будет рассмотрен волонтером.");
+                    sendText(user.getChatId(), "Отчет успешно отправлен. Он будет рассмотрен волонтером.");
                 } else {
-                    sendText(userId, "Отчет содержит некорректные данные. Пожалуйста, убедитесь, что ваши данные верны.");
-                }
-            } else {
-                sendText(userId, "Извините, вы не являетесь усыновителем. Эта функция доступна только усыновителям.");
-            }
+                    sendText(user.getChatId(), "Отчет содержит некорректные данные. Пожалуйста, убедитесь, что ваши данные верны.");
+                }/*else {
+                sendText(user.getChatId(), "Извините, вы не являетесь усыновителем. Эта функция доступна только усыновителям.");
+            }*/
         } else {
-            sendText(userId, "Вы не зарегистрированы в нашей системе. Пожалуйста, начните с команды /start.");
+            sendText(user.getChatId(), "Вы не зарегистрированы в нашей системе. Пожалуйста, начните с команды /start.");
         }
+        PetReport petReport = new PetReport(user, text, localDateTime);
         petReportRepository.save(petReport);
     }
 
@@ -84,6 +79,9 @@ public class ReportService{
         // Если столбец равен false отправить уведомление о том, что отчет не принят
     }
 
-
+    public void saveTextReport(long id, String text){
+        PetReport petReport = petReportRepository.findByUserIdAndDate(id, LocalDate.now());
+        petReportRepository.saveText(petReport.getId(), text);
+    }
 }
 
