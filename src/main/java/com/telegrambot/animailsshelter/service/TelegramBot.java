@@ -19,7 +19,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 import static com.telegrambot.animailsshelter.config.Information.*;
@@ -73,7 +73,7 @@ public class TelegramBot extends TelegramLongPollingBot {
             sendText(message.getChatId(), "Номер сохранён!");
         }
          if (update.hasMessage() && update.getMessage().getText().startsWith("Отчёт")) {
-             if (petReportRepository.findByUser_ChatIdAndDate(message.getChatId(), LocalDate.now()) == null) {
+             if (petReportRepository.findByUser_ChatIdAndDate(message.getChatId(), LocalDateTime.now()) == null) {
                  addService.petReportSave(user, message.getText());
                  sendText(message.getChatId(), "Отчёт сохранён");
              } else {
