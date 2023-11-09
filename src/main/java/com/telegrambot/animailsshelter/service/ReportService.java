@@ -80,7 +80,7 @@ public class ReportService{
     }
 
     public void saveTextReport(long chatId, String text){
-        PetReport petReport = petReportRepository.findByUser_ChatIdAndDate(chatId, LocalDate.now());
+        PetReport petReport = petReportRepository.findByUser_ChatIdAndDate(chatId, LocalDateTime.now());
         petReportRepository.saveText(petReport.getId(), text);
     }
 }
