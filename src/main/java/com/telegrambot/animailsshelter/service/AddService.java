@@ -5,6 +5,8 @@ import com.telegrambot.animailsshelter.repository.*;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+
 /**
  * Класс AddService - это класс для добавления в базу данных
  * Он предоставляет интерфейс добавлеения таких сущностей как Animal, AnimalOwner, PetReport, Shelter, Volunteer в базу данных.
@@ -59,7 +61,6 @@ public class AddService {
 * @param check проверялось ли животное
 */
     public PetReport petReportSave(User user, String report) {
-        userRepository.getReferenceById(user.getChatId());
         LocalDateTime localDateTime = LocalDateTime.now();
         PetReport petReport = new PetReport(user, report, localDateTime);
         return petReportRepository.save(petReport);

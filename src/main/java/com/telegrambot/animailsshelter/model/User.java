@@ -27,26 +27,27 @@ public class User {
     private String eMail;
      @OneToOne
      @JoinColumn(name = "animal_id")
-     private Animal animalId;
+     private Animal animal;
     public User() {
     }
 
-    public User( Long chatId, String firstName, String lastName, String userName,String phoneNumber,String eMail) {
+    public User( Long chatId, String firstName, String lastName, String userName,String phoneNumber,String eMail,Animal animal) {
         setChatId(chatId);
         setFirstName(firstName);
         setLastName(lastName);
         setUserName(userName);
         setPhoneNumber(phoneNumber);
         seteMail(eMail);
+        setAnimalId(animal);
     }
 
 
     public Animal getAnimalId() {
-        return animalId;
+        return animal;
     }
 
     public void setAnimalId(Animal animalId) {
-        this.animalId = animalId;
+        this.animal = animalId;
     }
 
     public String getPhoneNumber() {
