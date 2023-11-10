@@ -23,6 +23,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 import static com.telegrambot.animailsshelter.config.Information.*;
+import static org.springframework.util.ClassUtils.isPresent;
 
 
 /**
@@ -60,7 +61,12 @@ public class TelegramBot extends TelegramLongPollingBot {
      */
 
     public void onUpdateReceived(Update update) {
-        Long chatId = update.getMessage().getChatId();
+        Long chatId;
+        if (update.getMessage() != null) {
+            chatId = update.getMessage().getChatId();
+        } else {
+            chatId = update.getCallbackQuery().getMessage().getChatId();
+        }
         User user = userRepository.findById(chatId).orElse(null);
         Message message = update.getMessage();
         if (update.hasCallbackQuery()) {
@@ -76,10 +82,10 @@ public class TelegramBot extends TelegramLongPollingBot {
              if (petReportRepository.findByUser_ChatIdAndDate(message.getChatId(), LocalDateTime.now()) == null) {
                  addService.petReportSave(user, message.getText());
                  sendText(message.getChatId(), "Отчёт сохранён");
-             } else {
-                 reportService.saveTextReport(message.getChatId(),message.getText());
+             } /*else {
+                 reportService.saveTextReport(message.getChatId(), message.getText());
                  sendText(message.getChatId(), "Отчёт изменён");
-             }
+             }*/
         }
     }
 
@@ -142,6 +148,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                 case "back" -> {
                     sendWelcomeMessage(chatId);
                 }
+                case "report" -> sendReportInstructions(chatId);
                 default -> sendErrorMessageAboutChoosingShelter(chatId);
             }
         }

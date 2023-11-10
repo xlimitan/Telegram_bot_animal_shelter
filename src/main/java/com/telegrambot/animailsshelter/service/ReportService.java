@@ -41,7 +41,6 @@ public class ReportService{
         message.setChatId(String.valueOf(chatId));
         message.setText(text);
     }
-    @Transactional
     public void acceptAdoptionReport(Long id, User user, String text, List<PhotoSize> photos) {
         userRepository.findById(user.getChatId());
         LocalDateTime localDateTime = LocalDateTime.now();
@@ -79,8 +78,8 @@ public class ReportService{
         // Если столбец равен false отправить уведомление о том, что отчет не принят
     }
 
-    public void saveTextReport(long chatId, String text){
-        PetReport petReport = petReportRepository.findByUser_ChatIdAndDate(chatId, LocalDateTime.now());
+    public void saveTextReport(long id, String text){
+        PetReport petReport = petReportRepository.findByUser_ChatIdAndDate(id, LocalDateTime.now());
         petReportRepository.saveText(petReport.getId(), text);
     }
 }
