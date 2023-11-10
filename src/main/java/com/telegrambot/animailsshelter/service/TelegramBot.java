@@ -2,28 +2,28 @@ package com.telegrambot.animailsshelter.service;
 
 import ch.qos.logback.classic.Logger;
 import com.telegrambot.animailsshelter.config.BotConfig;
-import com.telegrambot.animailsshelter.model.PetReport;
+import com.telegrambot.animailsshelter.model.PhotoReport;
 import com.telegrambot.animailsshelter.model.User;
 import com.telegrambot.animailsshelter.repository.PetReportRepository;
 import com.telegrambot.animailsshelter.repository.UserRepository;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.meta.api.methods.GetFile;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
-import org.telegram.telegrambots.meta.api.objects.Chat;
-import org.telegram.telegrambots.meta.api.objects.Message;
-import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.*;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.io.File;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
 import static com.telegrambot.animailsshelter.config.Information.*;
-import static org.springframework.util.ClassUtils.isPresent;
 
 
 /**
@@ -43,13 +43,15 @@ public class TelegramBot extends TelegramLongPollingBot {
     private final ReportService reportService;
     private final AddService addService;
     private final PetReportRepository petReportRepository;
+    private final PhotoReportService photoReportService;
 
-    public TelegramBot(BotConfig config, UserService userService, ReportService reportService, AddService addService, PetReportRepository petReportRepository) {
+    public TelegramBot(BotConfig config, UserService userService, ReportService reportService, AddService addService, PetReportRepository petReportRepository, PhotoReportService photoReportService) {
         this.config = config;
         this.userService = userService;
         this.reportService = reportService;
         this.addService = addService;
         this.petReportRepository = petReportRepository;
+        this.photoReportService = photoReportService;
         this.userShelterChoiceMap = new HashMap<>();
     }
 
@@ -60,6 +62,7 @@ public class TelegramBot extends TelegramLongPollingBot {
      * @param update Объект, содержащий информацию об обновлении.
      */
 
+    @SneakyThrows
     public void onUpdateReceived(Update update) {
         Long chatId;
         if (update.getMessage() != null) {
@@ -74,19 +77,33 @@ public class TelegramBot extends TelegramLongPollingBot {
         } else if (update.hasMessage() && update.getMessage().hasText()) {
             handleMessage(update.getMessage());
         }
-        if (update.hasMessage() && update.getMessage().getText().startsWith("+7")) {
+        if (update.hasMessage() && update.getMessage().hasPhoto()) {
+            PhotoSize photo = update.getMessage().getPhoto().get(3);
+            GetFile getFile = new GetFile(photo.getFileId());
+            var file = execute(getFile);
+            File path = new java.io.File("photos/" + chatId + "_" + photo.getFileUniqueId() + LocalDate.now() + ".jpg");
+            downloadFile(file, path);
+            // если сегодня фото уже присылалось, перезаписываем путь в БД (один день одно фото)
+            if (photoReportService.findPhotoReportByUserIdAndDate(chatId, LocalDate.now()) == null) {
+                try {
+                    PhotoReport photoReport = new PhotoReport(chatId, LocalDate.now(), path.getPath());
+                    photoReportService.addPhotoReport(photoReport);
+                } catch (Exception e) {
+                }
+            } else {
+                photoReportService.recordDirPhoto(chatId, path.getPath());
+            }
+        }
+       /* if (update.hasMessage() && update.getMessage().getText().startsWith("+7")) {
             userService.savePhoneUser(message.getChatId(), message.getText());
             sendText(message.getChatId(), "Номер сохранён!");
-        }
-         if (update.hasMessage() && update.getMessage().getText().startsWith("Отчёт")) {
+        }*/
+         /*if (update.hasMessage() && update.getMessage().getText().startsWith("Отчёт")) {
              if (petReportRepository.findByUser_ChatIdAndDate(message.getChatId(), LocalDateTime.now()) == null) {
                  addService.petReportSave(user, message.getText());
                  sendText(message.getChatId(), "Отчёт сохранён");
-             } /*else {
-                 reportService.saveTextReport(message.getChatId(), message.getText());
-                 sendText(message.getChatId(), "Отчёт изменён");
-             }*/
-        }
+                 }
+        }*/
     }
 
     private void handleCallbackQuery(CallbackQuery callbackQuery) {

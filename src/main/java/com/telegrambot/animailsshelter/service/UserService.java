@@ -1,7 +1,10 @@
 package com.telegrambot.animailsshelter.service;
 
 import com.telegrambot.animailsshelter.model.Animal;
+import com.telegrambot.animailsshelter.model.Photo;
+import com.telegrambot.animailsshelter.model.PhotoReport;
 import com.telegrambot.animailsshelter.model.User;
+import com.telegrambot.animailsshelter.repository.PetReportRepository;
 import com.telegrambot.animailsshelter.repository.UserRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
@@ -19,9 +22,11 @@ import java.util.regex.Pattern;
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private final PetReportRepository petReportRepository;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, PetReportRepository petReportRepository) {
         this.userRepository = userRepository;
+        this.petReportRepository = petReportRepository;
     }
     /**
      * Метод Сохраняет сущность User.

@@ -20,8 +20,7 @@ public class Photo {
     private PetReport petReport;
     @OneToOne
     private Animal animal;
-    public Photo(Long id, String filePath, long fileSize, String mediaType, byte[] data) {
-        this.id = id;
+    public Photo( String filePath, long fileSize, String mediaType, byte[] data) {
         this.filePath = filePath;
         this.fileSize = fileSize;
         this.mediaType = mediaType;

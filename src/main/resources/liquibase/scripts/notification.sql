@@ -57,4 +57,11 @@ media_type varchar(1024),
 data bytea,
 pet_report_id int8,
 animal_id int8
+);
+create table if not exists photo_report(
+id bigserial primary key,
+user_id int8,
+date DATE,
+path text
 )
+
