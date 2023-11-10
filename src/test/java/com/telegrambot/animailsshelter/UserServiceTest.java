@@ -6,13 +6,10 @@ import com.telegrambot.animailsshelter.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.mockito.stubbing.Answer;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -25,11 +22,11 @@ class UserServiceTest {
 
     private UserService userService;
 
-    @BeforeEach
+  /*  @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        userService = new UserService(userRepository);
-    }
+        userService = new UserService(userRepository, petReportRepository);
+    }*/
 
  /*   @Test
     void testSaveBotUser() {
