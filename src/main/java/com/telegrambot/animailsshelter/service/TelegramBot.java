@@ -30,7 +30,6 @@ import static com.telegrambot.animailsshelter.config.Information.*;
  * Класс TelegramBot - это основной класс Telegram-бота, который обрабатывает входящие обновления и сообщения.
  * Он предоставляет интерфейс для взаимодействия с пользователем и управления базой данных.
  */
-@Slf4j
 @Component
 public class TelegramBot extends TelegramLongPollingBot {
     private Logger log;
@@ -64,20 +63,61 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     @SneakyThrows
     public void onUpdateReceived(Update update) {
-        Long chatId;
+        if (update.hasMessage() && update.getMessage().hasText()) {
+            handleMessage(update.getMessage());
+            Message message = update.getMessage();
+            Long chatId;
+            if (update.getMessage() != null) {
+                chatId = update.getMessage().getChatId();
+            } else {
+                chatId = update.getCallbackQuery().getMessage().getChatId();
+            }
+            User user = userRepository.findById(chatId).orElse(null);
+
+            if (message.getText().startsWith("+7")) {
+                userService.savePhoneUser(message.getChatId(), message.getText());
+                sendText(message.getChatId(), "Номер сохранён!");
+            }
+            if (message.getText().startsWith("Отчёт")) {
+                addService.petReportSave(user, message.getText());
+                sendText(message.getChatId(), "Отчёт сохранён");
+            }
+        }else if (update.hasCallbackQuery()) {
+            handleCallbackQuery(update.getCallbackQuery());
+        }
+            long id = update.getMessage().getChatId();
+            if (update.hasMessage() && update.getMessage().hasPhoto()) {
+                PhotoSize photo = update.getMessage().getPhoto().get(3);
+                GetFile getFile = new GetFile(photo.getFileId());
+                var file = execute(getFile);
+                File path = new java.io.File("photos/" + id + "_" + photo.getFileUniqueId() + LocalDate.now() + ".jpg");
+                downloadFile(file, path);
+                // если сегодня фото уже присылалось, перезаписываем путь в БД (один день одно фото)
+                if (photoReportService.findPhotoReportByUserIdAndDate(id, LocalDate.now()) == null) {
+                    try {
+                        PhotoReport photoReport = new PhotoReport(id, LocalDate.now(), path.getPath());
+                        photoReportService.addPhotoReport(photoReport);
+                    } catch (Exception e) {
+                    }
+                } else {
+                    photoReportService.recordDirPhoto(id, path.getPath());
+                }
+            }
+        /*Long chatId;
         if (update.getMessage() != null) {
             chatId = update.getMessage().getChatId();
         } else {
             chatId = update.getCallbackQuery().getMessage().getChatId();
-        }
-        User user = userRepository.findById(chatId).orElse(null);
+        }*/
+      /*  User user = userRepository.findById(chatId).orElse(null);
         Message message = update.getMessage();
-        if (update.hasCallbackQuery()) {
+        String messages = update.getMessage().getText();*/
+       /* if (update.hasCallbackQuery()) {
             handleCallbackQuery(update.getCallbackQuery());
         } else if (update.hasMessage() && update.getMessage().hasText()) {
             handleMessage(update.getMessage());
-        }
-        if (update.hasMessage() && update.getMessage().hasPhoto()) {
+        }*/
+       /* if (update.getMessage().hasDocument() && update.getMessage().hasPhoto()) {
             PhotoSize photo = update.getMessage().getPhoto().get(3);
             GetFile getFile = new GetFile(photo.getFileId());
             var file = execute(getFile);
@@ -94,15 +134,15 @@ public class TelegramBot extends TelegramLongPollingBot {
                 photoReportService.recordDirPhoto(chatId, path.getPath());
             }
         }
-       /* if (update.hasMessage() && update.getMessage().getText().startsWith("+7")) {
+        if (messages.startsWith("+7")) {
             userService.savePhoneUser(message.getChatId(), message.getText());
             sendText(message.getChatId(), "Номер сохранён!");
-        }*/
-         /*if (update.hasMessage() && update.getMessage().getText().startsWith("Отчёт")) {
+        }
+         if (update.hasMessage() && update.getMessage().getText().startsWith("Отчёт")) {
              if (petReportRepository.findByUser_ChatIdAndDate(message.getChatId(), LocalDateTime.now()) == null) {
                  addService.petReportSave(user, message.getText());
                  sendText(message.getChatId(), "Отчёт сохранён");
-                 }
+             }
         }*/
     }
 
