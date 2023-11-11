@@ -4,6 +4,7 @@ import com.telegrambot.animailsshelter.model.PhotoReport;
 import com.telegrambot.animailsshelter.repository.PhotoReportRepository;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.time.LocalDate;
 
 @Service
@@ -40,7 +41,8 @@ public class PhotoReportService {
      * @param dir путь где хранится фото
      * @return фото отчет
      */
-    public PhotoReport recordDirPhoto(long chatId, String dir){
-        return photoReportRepository.recordDirPhoto(chatId, dir);
+    @Transactional
+    public void recordDirPhoto(long chatId, String dir){
+         photoReportRepository.recordDirPhoto(chatId, dir);
     }
 }
