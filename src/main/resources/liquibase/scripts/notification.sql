@@ -1,6 +1,6 @@
 -- liquibase formatted sql
 
--- changeset cod:3
+-- changeset cod:2
 
 create table  IF NOT EXISTS users_data_table (
 chat_id bigserial primary key,
@@ -9,7 +9,8 @@ last_name varchar(20),
 user_name varchar(20),
 phone_number varchar(20),
 e_Mail varchar(100),
-animal_id int8
+animal_id int8,
+date DATE
 );
 
 create table if not exists animal(
@@ -30,7 +31,7 @@ trial_period boolean
 create table if not exists pet_report(
 id bigserial primary key,
 report text,
-date timestamp,
+date DATE,
 correct boolean,
 user_id int8,
 photo_id int8
