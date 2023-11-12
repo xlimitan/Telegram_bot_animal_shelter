@@ -103,47 +103,6 @@ public class TelegramBot extends TelegramLongPollingBot {
                     photoReportService.recordDirPhoto(id, path.getPath());
                 }
             }
-        /*Long chatId;
-        if (update.getMessage() != null) {
-            chatId = update.getMessage().getChatId();
-        } else {
-            chatId = update.getCallbackQuery().getMessage().getChatId();
-        }*/
-      /*  User user = userRepository.findById(chatId).orElse(null);
-        Message message = update.getMessage();
-        String messages = update.getMessage().getText();*/
-       /* if (update.hasCallbackQuery()) {
-            handleCallbackQuery(update.getCallbackQuery());
-        } else if (update.hasMessage() && update.getMessage().hasText()) {
-            handleMessage(update.getMessage());
-        }*/
-       /* if (update.getMessage().hasDocument() && update.getMessage().hasPhoto()) {
-            PhotoSize photo = update.getMessage().getPhoto().get(3);
-            GetFile getFile = new GetFile(photo.getFileId());
-            var file = execute(getFile);
-            File path = new java.io.File("photos/" + chatId + "_" + photo.getFileUniqueId() + LocalDate.now() + ".jpg");
-            downloadFile(file, path);
-            // если сегодня фото уже присылалось, перезаписываем путь в БД (один день одно фото)
-            if (photoReportService.findPhotoReportByUserIdAndDate(chatId, LocalDate.now()) == null) {
-                try {
-                    PhotoReport photoReport = new PhotoReport(chatId, LocalDate.now(), path.getPath());
-                    photoReportService.addPhotoReport(photoReport);
-                } catch (Exception e) {
-                }
-            } else {
-                photoReportService.recordDirPhoto(chatId, path.getPath());
-            }
-        }
-        if (messages.startsWith("+7")) {
-            userService.savePhoneUser(message.getChatId(), message.getText());
-            sendText(message.getChatId(), "Номер сохранён!");
-        }
-         if (update.hasMessage() && update.getMessage().getText().startsWith("Отчёт")) {
-             if (petReportRepository.findByUser_ChatIdAndDate(message.getChatId(), LocalDateTime.now()) == null) {
-                 addService.petReportSave(user, message.getText());
-                 sendText(message.getChatId(), "Отчёт сохранён");
-             }
-        }*/
     }
 
     private void handleCallbackQuery(CallbackQuery callbackQuery) {
