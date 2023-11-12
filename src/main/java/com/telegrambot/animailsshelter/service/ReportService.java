@@ -35,7 +35,7 @@ public class ReportService{
         this.petReportRepository = petReportRepository;
         this.userShelterChoiceMap = new HashMap<>();
     }
-
+/*
     private void sendText(long chatId, String text) {
         SendMessage message = new SendMessage();
         message.setChatId(String.valueOf(chatId));
@@ -61,6 +61,11 @@ public class ReportService{
     public void saveTextReport(long id, String text, Photo  photo){
         PetReport petReport = petReportRepository.findByUser_ChatIdAndDate(id, LocalDate.now());
         petReportRepository.saveText(petReport.getId(), text);
+    }*/
+
+    @Scheduled(cron = "* * 21 * * *")
+    public void checkingReports() {
+
     }
 }
 

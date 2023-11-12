@@ -113,41 +113,6 @@ public class TelegramBot extends TelegramLongPollingBot {
                     photoReportService.recordDirPhoto(id, path.getPath());
                 }
             }
-    }
-
-    @Scheduled(cron = "* * 21 * * *")
-    public void checkingReports() {
-
-        LocalDate dateNow = LocalDate.now();
-        List<User> users = userService.getAllUsers();                                                          // список всех владельцев
-        for (User user : users) {
-            if (petReportRepository.findByUser_ChatIdAndDate(user.getChatId(), dateNow) == null) {                               // если сегодня отчетов не было
-                sendText(petReportRepository.findByUser_ChatIdAndDate(user.getChatId(),dateNow).getId(), "Отправьте отчет"); // !!! проверить строку
-            }
-            if (petReportRepository.checkingLastDateReports(user.getChatId()) == null) {                                              // если владелец еще не оставлял отчетов
-                Period period = user.getDate().until(dateNow);                                                            // проверяем как давно он взял питомца
-                if (period.getDays() >= 2) {                                                                                     // если больше двух дней назад
-                    sendText(petReportRepository.findByUser_ChatIdAndDate(user.getChatId(),dateNow).getId(), "Отчётов не было больше двух дней. Информация переданная волонтеру!");
-                }
-            } else {
-                PetReport petReport = petReportRepository.checkingLastDateReports(user.getChatId());                                 // если отчет есть, забираем по последней дате добавления
-                LocalDate reportDate = LocalDate.from(petReport.getDate());                                                                     // извлекаем дату
-                if (!(petReport.getDate().equals(dateNow))) {                                                                    // сверяем с текущей датой, ни сегодня ли прислан отчет
-                    Period period = reportDate.until(dateNow);                                                                  // если нет проверяем как давно
-                    if (period.getDays() >= 2) {                                                                                 // если два или более дня назад
-                        sendText(petReportRepository.findByUser_ChatIdAndDate(user.getChatId(),dateNow).getId(), "Отчётов не было больше двух дней. Информация переданная волонтеру!");
-                    }
-                } else {
-                    if (petReport.getReport() == null) {
-                        sendText(petReportRepository.findByUser_ChatIdAndDate(user.getChatId(),dateNow).getId(), "Пришлите текстовый отчет");
-                    }
-                    if (photoReportService.findPhotoReportByUserIdAndDate(user.getChatId(), LocalDate.now()) == null) {
-                        sendText(petReportRepository.findByUser_ChatIdAndDate(user.getChatId(),dateNow).getId(), "Пришлите фотографию животного");
-                    }
-                }
-            }
-        }
-    }
 
     private void handleCallbackQuery(CallbackQuery callbackQuery) {
         String callbackData = callbackQuery.getData();
