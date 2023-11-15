@@ -149,6 +149,9 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
+
+
+
     private void handleCallbackQuery(CallbackQuery callbackQuery) {
         String callbackData = callbackQuery.getData();
         long chatId = callbackQuery.getMessage().getChatId();
