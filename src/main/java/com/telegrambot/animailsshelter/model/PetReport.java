@@ -38,6 +38,7 @@ public class PetReport {
         this.user = user;
         this.report= report;
         this.date = date;
+        user.setDate(date);
     }
     public PetReport() {
     }

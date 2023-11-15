@@ -26,6 +26,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.*;
+import java.util.logging.ErrorManager;
 
 import static com.telegrambot.animailsshelter.config.Information.*;
 
@@ -34,6 +35,7 @@ import static com.telegrambot.animailsshelter.config.Information.*;
  * Класс TelegramBot - это основной класс Telegram-бота, который обрабатывает входящие обновления и сообщения.
  * Он предоставляет интерфейс для взаимодействия с пользователем и управления базой данных.
  */
+@Slf4j
 @Component
 public class TelegramBot extends TelegramLongPollingBot {
 
@@ -88,7 +90,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         }else if (update.hasCallbackQuery()) {
             handleCallbackQuery(update.getCallbackQuery());
         }
-
+        //asd adasdasdasd
         Long id;
         if (update.getMessage() != null) {
             id = update.getMessage().getChatId();
@@ -115,19 +117,22 @@ public class TelegramBot extends TelegramLongPollingBot {
             }
     }
 
-    @Scheduled(cron = "* * 21 * * *")
+//    @Scheduled(cron = "* * 21 * * *")
+    @Scheduled(fixedDelay = 5000)
     public void checkingReports() {
-
+        log.error("Сообщение не отправлено!");
+        log.info("Сообщение не отправлено!");
         LocalDate dateNow = LocalDate.now();
         List<User> users = userService.getAllUsers();                                                          // список всех владельцев
         for (User user : users) {
             if (petReportRepository.findByUser_ChatIdAndDate(user.getChatId(), dateNow) == null) {                               // если сегодня отчетов не было
-                sendText(petReportRepository.findByUser_ChatIdAndDate(user.getChatId(),dateNow).getId(), "Отправьте отчет"); // !!! проверить строку
+                sendText(user.getChatId(), "Отправьте отчет"); // !!! проверить строку
             }
             if (petReportRepository.checkingLastDateReports(user.getChatId()) == null) {                                              // если владелец еще не оставлял отчетов
                 Period period = user.getDate().until(dateNow);                                                            // проверяем как давно он взял питомца
                 if (period.getDays() >= 2) {                                                                                     // если больше двух дней назад
-                    sendText(petReportRepository.findByUser_ChatIdAndDate(user.getChatId(),dateNow).getId(), "Отчётов не было больше двух дней. Информация переданная волонтеру!");
+                    sendText(user.getChatId(), "Отчётов не было больше двух дней. Информация переданная волонтеру!");
+//                    sendText(petReportRepository.findByUser_ChatIdAndDate(user.getChatId(),dateNow).getId(), "Отчётов не было больше двух дней. Информация переданная волонтеру!");
                 }
             } else {
                 PetReport petReport = petReportRepository.checkingLastDateReports(user.getChatId());                                 // если отчет есть, забираем по последней дате добавления
@@ -135,14 +140,17 @@ public class TelegramBot extends TelegramLongPollingBot {
                 if (!(petReport.getDate().equals(dateNow))) {                                                                    // сверяем с текущей датой, ни сегодня ли прислан отчет
                     Period period = reportDate.until(dateNow);                                                                  // если нет проверяем как давно
                     if (period.getDays() >= 2) {                                                                                 // если два или более дня назад
-                        sendText(petReportRepository.findByUser_ChatIdAndDate(user.getChatId(),dateNow).getId(), "Отчётов не было больше двух дней. Информация переданная волонтеру!");
+                        sendText(user.getChatId(), "Отчётов не было больше двух дней. Информация переданная волонтеру!");
+//                        sendText(petReportRepository.findByUser_ChatIdAndDate(user.getChatId(),dateNow).getId(), "Отчётов не было больше двух дней. Информация переданная волонтеру!");
                     }
                 } else {
                     if (petReport.getReport() == null) {
-                        sendText(petReportRepository.findByUser_ChatIdAndDate(user.getChatId(),dateNow).getId(), "Пришлите текстовый отчет");
+                        sendText(user.getChatId(), "Пришлите текстовый отчет");
+//                        sendText(petReportRepository.findByUser_ChatIdAndDate(user.getChatId(),dateNow).getId(), "Пришлите текстовый отчет");
                     }
                     if (photoReportService.findPhotoReportByUserIdAndDate(user.getChatId(), LocalDate.now()) == null) {
-                        sendText(petReportRepository.findByUser_ChatIdAndDate(user.getChatId(),dateNow).getId(), "Пришлите фотографию животного");
+                        sendText(user.getChatId(), "Пришлите фотографию животного");
+//                        sendText(petReportRepository.findByUser_ChatIdAndDate(user.getChatId(),dateNow).getId(), "Пришлите фотографию животного");
                     }
                 }
             }
