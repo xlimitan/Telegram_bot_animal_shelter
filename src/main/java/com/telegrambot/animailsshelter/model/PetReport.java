@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 /**
@@ -21,7 +22,7 @@ public class PetReport {
     @Column(name = "report")
     private String report;
     @Column(name = "date")
-    private LocalDateTime date;
+    private LocalDate date;
     @Column(name = "correct")
     private boolean correct;
 
@@ -33,7 +34,7 @@ public class PetReport {
     @JoinColumn(name = "user_id")
     private User user;
 
-    public PetReport(User user,String report, LocalDateTime date) {
+    public PetReport(User user,String report, LocalDate date) {
         this.user = user;
         this.report= report;
         this.date = date;

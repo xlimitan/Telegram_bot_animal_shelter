@@ -2,6 +2,8 @@ package com.telegrambot.animailsshelter.service;
 
 import ch.qos.logback.classic.Logger;
 import com.telegrambot.animailsshelter.config.BotConfig;
+import com.telegrambot.animailsshelter.model.AnimalOwner;
+import com.telegrambot.animailsshelter.model.PetReport;
 import com.telegrambot.animailsshelter.model.PhotoReport;
 import com.telegrambot.animailsshelter.model.User;
 import com.telegrambot.animailsshelter.repository.PetReportRepository;
@@ -9,6 +11,7 @@ import com.telegrambot.animailsshelter.repository.UserRepository;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.GetFile;
@@ -21,6 +24,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import java.io.File;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.util.*;
 
 import static com.telegrambot.animailsshelter.config.Information.*;
@@ -32,7 +36,6 @@ import static com.telegrambot.animailsshelter.config.Information.*;
  */
 @Component
 public class TelegramBot extends TelegramLongPollingBot {
-    private Logger log;
 
     private final BotConfig config;
 @Autowired
@@ -85,7 +88,14 @@ public class TelegramBot extends TelegramLongPollingBot {
         }else if (update.hasCallbackQuery()) {
             handleCallbackQuery(update.getCallbackQuery());
         }
-            long id = update.getMessage().getChatId();
+
+        Long id;
+        if (update.getMessage() != null) {
+            id = update.getMessage().getChatId();
+        } else {
+            id = update.getCallbackQuery().getMessage().getChatId();
+        }
+//            long id = update.getMessage().getChatId();
             if (update.hasMessage() && update.getMessage().hasPhoto()) {
                 PhotoSize photo = update.getMessage().getPhoto().get(3);
                 GetFile getFile = new GetFile(photo.getFileId());
@@ -103,47 +113,40 @@ public class TelegramBot extends TelegramLongPollingBot {
                     photoReportService.recordDirPhoto(id, path.getPath());
                 }
             }
-        /*Long chatId;
-        if (update.getMessage() != null) {
-            chatId = update.getMessage().getChatId();
-        } else {
-            chatId = update.getCallbackQuery().getMessage().getChatId();
-        }*/
-      /*  User user = userRepository.findById(chatId).orElse(null);
-        Message message = update.getMessage();
-        String messages = update.getMessage().getText();*/
-       /* if (update.hasCallbackQuery()) {
-            handleCallbackQuery(update.getCallbackQuery());
-        } else if (update.hasMessage() && update.getMessage().hasText()) {
-            handleMessage(update.getMessage());
-        }*/
-       /* if (update.getMessage().hasDocument() && update.getMessage().hasPhoto()) {
-            PhotoSize photo = update.getMessage().getPhoto().get(3);
-            GetFile getFile = new GetFile(photo.getFileId());
-            var file = execute(getFile);
-            File path = new java.io.File("photos/" + chatId + "_" + photo.getFileUniqueId() + LocalDate.now() + ".jpg");
-            downloadFile(file, path);
-            // если сегодня фото уже присылалось, перезаписываем путь в БД (один день одно фото)
-            if (photoReportService.findPhotoReportByUserIdAndDate(chatId, LocalDate.now()) == null) {
-                try {
-                    PhotoReport photoReport = new PhotoReport(chatId, LocalDate.now(), path.getPath());
-                    photoReportService.addPhotoReport(photoReport);
-                } catch (Exception e) {
+    }
+
+    @Scheduled(cron = "* * 21 * * *")
+    public void checkingReports() {
+
+        LocalDate dateNow = LocalDate.now();
+        List<User> users = userService.getAllUsers();                                                          // список всех владельцев
+        for (User user : users) {
+            if (petReportRepository.findByUser_ChatIdAndDate(user.getChatId(), dateNow) == null) {                               // если сегодня отчетов не было
+                sendText(petReportRepository.findByUser_ChatIdAndDate(user.getChatId(),dateNow).getId(), "Отправьте отчет"); // !!! проверить строку
+            }
+            if (petReportRepository.checkingLastDateReports(user.getChatId()) == null) {                                              // если владелец еще не оставлял отчетов
+                Period period = user.getDate().until(dateNow);                                                            // проверяем как давно он взял питомца
+                if (period.getDays() >= 2) {                                                                                     // если больше двух дней назад
+                    sendText(petReportRepository.findByUser_ChatIdAndDate(user.getChatId(),dateNow).getId(), "Отчётов не было больше двух дней. Информация переданная волонтеру!");
                 }
             } else {
-                photoReportService.recordDirPhoto(chatId, path.getPath());
+                PetReport petReport = petReportRepository.checkingLastDateReports(user.getChatId());                                 // если отчет есть, забираем по последней дате добавления
+                LocalDate reportDate = LocalDate.from(petReport.getDate());                                                                     // извлекаем дату
+                if (!(petReport.getDate().equals(dateNow))) {                                                                    // сверяем с текущей датой, ни сегодня ли прислан отчет
+                    Period period = reportDate.until(dateNow);                                                                  // если нет проверяем как давно
+                    if (period.getDays() >= 2) {                                                                                 // если два или более дня назад
+                        sendText(petReportRepository.findByUser_ChatIdAndDate(user.getChatId(),dateNow).getId(), "Отчётов не было больше двух дней. Информация переданная волонтеру!");
+                    }
+                } else {
+                    if (petReport.getReport() == null) {
+                        sendText(petReportRepository.findByUser_ChatIdAndDate(user.getChatId(),dateNow).getId(), "Пришлите текстовый отчет");
+                    }
+                    if (photoReportService.findPhotoReportByUserIdAndDate(user.getChatId(), LocalDate.now()) == null) {
+                        sendText(petReportRepository.findByUser_ChatIdAndDate(user.getChatId(),dateNow).getId(), "Пришлите фотографию животного");
+                    }
+                }
             }
         }
-        if (messages.startsWith("+7")) {
-            userService.savePhoneUser(message.getChatId(), message.getText());
-            sendText(message.getChatId(), "Номер сохранён!");
-        }
-         if (update.hasMessage() && update.getMessage().getText().startsWith("Отчёт")) {
-             if (petReportRepository.findByUser_ChatIdAndDate(message.getChatId(), LocalDateTime.now()) == null) {
-                 addService.petReportSave(user, message.getText());
-                 sendText(message.getChatId(), "Отчёт сохранён");
-             }
-        }*/
     }
 
     private void handleCallbackQuery(CallbackQuery callbackQuery) {
@@ -155,7 +158,10 @@ public class TelegramBot extends TelegramLongPollingBot {
                 case "info" -> sendText(chatId, INFO_SHELTER);
                 case "adopt" -> sendHowToAdoptInfoForShelter(chatId, userShelterChoiceMap.get(chatId));
                 case "becomeVolunteer" -> sendBecomeVolunteerInstructions(chatId);
-                case "report" -> sendReportInstructions(chatId);
+                case "report" -> {
+                    sendReportInstructions(chatId);
+                    checkingReports();
+                }
                 case "volunteer" -> sendText(chatId, CALL_VOLUNTEER);
                 case "aboutUs" -> aboutUs(chatId);
                 case "address" -> sendText(chatId, ADDRESS_SHELTER);

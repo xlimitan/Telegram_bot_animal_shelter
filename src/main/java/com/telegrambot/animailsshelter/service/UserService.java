@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
 import javax.transaction.Transactional;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
@@ -40,8 +41,8 @@ public class UserService {
      * @return возвращаемая сущность
      */
 
-    public User saveBotUser(long chatId, String firstName, String lastName, String userName, String phoneNumber, String eMail, Animal animal) {
-        User user = new User(chatId, firstName, lastName, userName, phoneNumber,eMail,animal);
+    public User saveBotUser(long chatId, String firstName, String lastName, String userName, String phoneNumber, String eMail, Animal animal, LocalDate date) {
+        User user = new User(chatId, firstName, lastName, userName, phoneNumber,eMail,animal, date);
         return userRepository.save(user);
     }
     /**

@@ -4,6 +4,7 @@ import com.telegrambot.animailsshelter.model.*;
 import com.telegrambot.animailsshelter.repository.*;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
@@ -56,13 +57,12 @@ public class AddService {
     }
 /**
 * Метод сохраняет отчёт о домашнем животном
-* @param diet диета
-* @param feelings состояние животного
-* @param check проверялось ли животное
+* @param user диета
+* @param report состояние животного
 */
     public PetReport petReportSave(User user, String report) {
-        LocalDateTime localDateTime = LocalDateTime.now();
-        PetReport petReport = new PetReport(user, report, localDateTime);
+        LocalDate localDate = LocalDate.now();
+        PetReport petReport = new PetReport(user, report, localDate);
         return petReportRepository.save(petReport);
     }
 /**
