@@ -10,7 +10,8 @@ user_name varchar(20),
 phone_number varchar(20),
 e_Mail varchar(100),
 animal_id int8,
-date DATE
+date DATE,
+trial_period boolean
 );
 
 create table if not exists animal(

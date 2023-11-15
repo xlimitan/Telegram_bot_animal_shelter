@@ -1,14 +1,10 @@
 package com.telegrambot.animailsshelter.model;
 
-import liquibase.pro.packaged.S;
 import lombok.Getter;
 import lombok.Setter;
-import org.glassfish.grizzly.http.util.TimeStamp;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.Collection;
-import java.util.List;
 
 /**
  * Класс User представляет информацию о пользователе бота. Эта информация сохраняется в базе данных.
@@ -40,10 +36,12 @@ public class User {
     @Column(name = "date")
     private LocalDate date;
 
+    @Column(name = "trial_period")
+    private boolean trialPeriod;
     public User() {
     }
 
-    public User (Long chatId, String firstName, String lastName, String userName,String phoneNumber,String eMail,Animal animal, LocalDate data) {
+    public User (Long chatId, String firstName, String lastName, String userName,String phoneNumber,String eMail,Animal animal, LocalDate data, boolean trialPeriod) {
         setChatId(chatId);
         setFirstName(firstName);
         setLastName(lastName);
@@ -52,25 +50,22 @@ public class User {
         seteMail(eMail);
         setAnimalId(animal);
         setDate(data);
+        setTrialPeriod(trialPeriod);
     }
 
-
-    public Animal getAnimalId() {
-        return animal;
-    }
 
     public void setAnimalId(Animal animalId) {
         this.animal = animalId;
     }
 
-    public String geteMail() {
-        return eMail;
-    }
 
     public void seteMail(String eMail) {
         this.eMail = eMail;
     }
 
+    public String geteMail() {
+        return eMail;
+    }
 
     @Override
     public String toString() {

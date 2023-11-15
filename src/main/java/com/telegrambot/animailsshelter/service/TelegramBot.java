@@ -116,6 +116,26 @@ public class TelegramBot extends TelegramLongPollingBot {
                 }
             }
     }
+    @Scheduled(fixedDelay = 5000)
+public  void checkFinalDate(){
+    List<User> users = userService.getAllUsers();                                                          // список всех владельцев
+    for (User user : users) {
+        if (!user.isTrialPeriod()) {
+            if (user.getDate().equals(LocalDate.now().plusDays(14))) {
+                sendText(user.getChatId(), "Вам назначен дополнительный испытательный срок 14 дней");
+            }
+             if (user.getDate().equals(LocalDate.now().plusDays(30))) {
+                sendText(user.getChatId(), "Вам назначен дополнительный испытательный срок 30 дней");
+            }
+        } else  {
+            if (user.isTrialPeriod()) {
+                sendText(user.getChatId(), "Поздравляем, вы прошли испытательный срок");
+                }
+                sendText(user.getChatId(), "Вы не прошли испытательный срок");
+            }
+        }
+    }
+
 
 //    @Scheduled(cron = "* * 21 * * *")
     @Scheduled(fixedDelay = 5000)
