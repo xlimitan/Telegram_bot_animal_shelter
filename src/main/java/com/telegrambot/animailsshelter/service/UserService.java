@@ -1,9 +1,6 @@
 package com.telegrambot.animailsshelter.service;
 
-import com.telegrambot.animailsshelter.model.Animal;
-import com.telegrambot.animailsshelter.model.Photo;
-import com.telegrambot.animailsshelter.model.PhotoReport;
-import com.telegrambot.animailsshelter.model.User;
+import com.telegrambot.animailsshelter.model.*;
 import com.telegrambot.animailsshelter.repository.PetReportRepository;
 import com.telegrambot.animailsshelter.repository.UserRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -41,8 +38,8 @@ public class UserService {
      * @return возвращаемая сущность
      */
 
-    public User saveBotUser(long chatId, String firstName, String lastName, String userName, String phoneNumber, String eMail, Animal animal, LocalDate date, boolean trialPeriod) {
-        User user = new User(chatId, firstName, lastName, userName, phoneNumber,eMail,animal, date, trialPeriod);
+    public User saveBotUser(long chatId, String firstName, String lastName, String userName, String phoneNumber, String eMail, Animal animal, LocalDate date, boolean trialPeriod, TrialPeriod period) {
+        User user = new User(chatId, firstName, lastName, userName, phoneNumber,eMail,animal, date, trialPeriod, period);
         return userRepository.save(user);
     }
     /**

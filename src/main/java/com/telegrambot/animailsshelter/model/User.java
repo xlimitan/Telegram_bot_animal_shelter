@@ -38,10 +38,13 @@ public class User {
 
     @Column(name = "trial_period")
     private boolean trialPeriod;
+
+    @Column
+    private TrialPeriod period;
     public User() {
     }
 
-    public User (Long chatId, String firstName, String lastName, String userName,String phoneNumber,String eMail,Animal animal, LocalDate data, boolean trialPeriod) {
+    public User (Long chatId, String firstName, String lastName, String userName,String phoneNumber,String eMail,Animal animal, LocalDate data, boolean trialPeriod, TrialPeriod period) {
         setChatId(chatId);
         setFirstName(firstName);
         setLastName(lastName);
@@ -51,6 +54,7 @@ public class User {
         setAnimalId(animal);
         setDate(data);
         setTrialPeriod(trialPeriod);
+        setPeriod(period);
     }
 
 

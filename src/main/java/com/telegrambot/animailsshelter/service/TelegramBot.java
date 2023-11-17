@@ -2,9 +2,7 @@ package com.telegrambot.animailsshelter.service;
 
 import ch.qos.logback.classic.Logger;
 import com.telegrambot.animailsshelter.config.BotConfig;
-import com.telegrambot.animailsshelter.model.AnimalOwner;
-import com.telegrambot.animailsshelter.model.PetReport;
-import com.telegrambot.animailsshelter.model.PhotoReport;
+import com.telegrambot.animailsshelter.model.*;
 import com.telegrambot.animailsshelter.model.User;
 import com.telegrambot.animailsshelter.repository.PetReportRepository;
 import com.telegrambot.animailsshelter.repository.UserRepository;
@@ -120,19 +118,20 @@ public class TelegramBot extends TelegramLongPollingBot {
 public  void checkFinalDate(){
     List<User> users = userService.getAllUsers();                                                          // список всех владельцев
     for (User user : users) {
-        if (!user.isTrialPeriod()) {
-            if (user.getDate().equals(LocalDate.now().plusDays(14))) {
+        if (user.getPeriod().equals(TrialPeriod.NULL)) {
+            if (user.getDate().plusDays(1).equals(LocalDate.now())) {
                 sendText(user.getChatId(), "Вам назначен дополнительный испытательный срок 14 дней");
             }
-             if (user.getDate().equals(LocalDate.now().plusDays(30))) {
+            if (user.getDate().plusDays(2).equals(LocalDate.now())) {
                 sendText(user.getChatId(), "Вам назначен дополнительный испытательный срок 30 дней");
             }
-        } else  {
-            if (user.isTrialPeriod()) {
+        } else {
+            if (user.getPeriod().equals(TrialPeriod.TRY)) {
                 sendText(user.getChatId(), "Поздравляем, вы прошли испытательный срок");
-                }
+            } else {
                 sendText(user.getChatId(), "Вы не прошли испытательный срок");
             }
+        }
         }
     }
 
@@ -449,6 +448,8 @@ public  void checkFinalDate(){
             user.setUserName(chat.getUserName());
             user.setPhoneNumber(user.getPhoneNumber());
             user.seteMail(user.geteMail());
+            user.setDate(LocalDate.now());
+            user.setPeriod(TrialPeriod.NULL);
 
             userRepository.save(user);
 //            log.info("User saved: " + user);
