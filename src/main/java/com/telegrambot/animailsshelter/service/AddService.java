@@ -14,19 +14,16 @@ import java.time.temporal.ChronoUnit;
  */
 @Service
 public class AddService {
-    private final AnimalOwnerRepository animalOwnerRepository;
     private final AnimalRepository animalRepository;
     private final PetReportRepository petReportRepository;
     private final ShelterRepository shelterRepository;
     private final VolunteerRepository volunteerRepository;
     private final UserRepository userRepository;
 
-    public AddService(AnimalOwnerRepository animalOwnerRepository,
-                      AnimalRepository animalRepository,
+    public AddService(AnimalRepository animalRepository,
                       PetReportRepository petReportRepository,
                       ShelterRepository shelterRepository,
                       VolunteerRepository volunteerRepository, UserRepository userRepository) {
-        this.animalOwnerRepository = animalOwnerRepository;
         this.animalRepository = animalRepository;
         this.petReportRepository = petReportRepository;
         this.shelterRepository = shelterRepository;
@@ -43,17 +40,6 @@ public class AddService {
     public Animal animalSave( long id,String animalType, String name, int age, String breed) {
         Animal animal = new Animal(id,animalType, name, age, breed);
         return animalRepository.save(animal);
-    }
-/**
-* Метод сохраняет владельца животного кота или собаку
-* @param name имя
-* @param phoneNumber номер телефона владельца
-* @param eMail электронная почта
-* @param trialPeriod испытательный срок
-*/
-    public AnimalOwner animalOwnerSave(long id, boolean trialPeriod) {
-        AnimalOwner animalOwner = new AnimalOwner(id,trialPeriod);
-        return animalOwnerRepository.save(animalOwner);
     }
 /**
 * Метод сохраняет отчёт о домашнем животном

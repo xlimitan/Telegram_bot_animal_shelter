@@ -38,8 +38,8 @@ public class UserService {
      * @return возвращаемая сущность
      */
 
-    public User saveBotUser(long chatId, String firstName, String lastName, String userName, String phoneNumber, String eMail, Animal animal, LocalDate date, boolean trialPeriod, TrialPeriod period) {
-        User user = new User(chatId, firstName, lastName, userName, phoneNumber,eMail,animal, date, trialPeriod, period);
+    public User saveBotUser(long chatId, String firstName, String lastName, String userName, String phoneNumber, String eMail, Animal animal, LocalDate date, TrialPeriod period) {
+        User user = new User(chatId, firstName, lastName, userName, phoneNumber,eMail,animal, date, period);
         return userRepository.save(user);
     }
     /**

@@ -1,5 +1,6 @@
 package com.telegrambot.animailsshelter.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,7 +15,6 @@ import java.time.LocalDate;
 @Entity(name = "usersDataTable")
 public class User {
     @Id
-    //@GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long chatId;
 
     private String firstName;
@@ -36,15 +36,12 @@ public class User {
     @Column(name = "date")
     private LocalDate date;
 
-    @Column(name = "trial_period")
-    private boolean trialPeriod;
-
     @Column
     private TrialPeriod period;
     public User() {
     }
 
-    public User (Long chatId, String firstName, String lastName, String userName,String phoneNumber,String eMail,Animal animal, LocalDate data, boolean trialPeriod, TrialPeriod period) {
+    public User (Long chatId, String firstName, String lastName, String userName,String phoneNumber,String eMail,Animal animal, LocalDate data, TrialPeriod period) {
         setChatId(chatId);
         setFirstName(firstName);
         setLastName(lastName);
@@ -53,7 +50,6 @@ public class User {
         seteMail(eMail);
         setAnimalId(animal);
         setDate(data);
-        setTrialPeriod(trialPeriod);
         setPeriod(period);
     }
 

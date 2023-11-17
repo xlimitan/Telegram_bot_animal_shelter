@@ -3,13 +3,11 @@ package com.telegrambot.animailsshelter;
 import com.telegrambot.animailsshelter.model.Animal;
 import com.telegrambot.animailsshelter.model.Shelter;
 import com.telegrambot.animailsshelter.model.Volunteer;
-import com.telegrambot.animailsshelter.repository.AnimalOwnerRepository;
 import com.telegrambot.animailsshelter.repository.AnimalRepository;
 import com.telegrambot.animailsshelter.repository.PetReportRepository;
 import com.telegrambot.animailsshelter.repository.ShelterRepository;
 import com.telegrambot.animailsshelter.repository.VolunteerRepository;
 import com.telegrambot.animailsshelter.service.AddService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -24,8 +22,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class AddServiceTest {
 
-    @MockBean
-    private AnimalOwnerRepository animalOwnerRepository;
 
     @MockBean
     private AnimalRepository animalRepository;
