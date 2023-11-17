@@ -42,15 +42,13 @@ public class TelegramBot extends TelegramLongPollingBot {
     private UserRepository userRepository;
     private final Map<Long, String> userShelterChoiceMap;
     private final UserService userService;
-    private final ReportService reportService;
     private final AddService addService;
     private final PetReportRepository petReportRepository;
     private final PhotoReportService photoReportService;
 
-    public TelegramBot(BotConfig config, UserService userService, ReportService reportService, AddService addService, PetReportRepository petReportRepository, PhotoReportService photoReportService) {
+    public TelegramBot(BotConfig config, UserService userService, AddService addService, PetReportRepository petReportRepository, PhotoReportService photoReportService) {
         this.config = config;
         this.userService = userService;
-        this.reportService = reportService;
         this.addService = addService;
         this.petReportRepository = petReportRepository;
         this.photoReportService = photoReportService;
@@ -449,7 +447,6 @@ public  void checkFinalDate(){
             user.setUserName(chat.getUserName());
             user.setPhoneNumber(user.getPhoneNumber());
             user.seteMail(user.geteMail());
-            user.setDate(LocalDate.now());
             user.setPeriod(TrialPeriod.NULL);
 
             userRepository.save(user);

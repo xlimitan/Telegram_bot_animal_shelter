@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -19,8 +20,6 @@ public interface UserRepository extends JpaRepository<User,Long> {
     Optional<User> findByChatId(Long chatId);
 
         User getReferenceById(Long userId);
-
-    @Query(value = "UPDATE public.users set telephone =:phone WHERE chat_id =:id ", nativeQuery = true)
-    void savePhone(long id, String phone);
-
+    @Query(value = "UPDATE public.users_data_table set date =:date WHERE chat_id=:chat_id", nativeQuery = true)
+    void saveDateByChatId(Long chat_id, LocalDate date);
 }
