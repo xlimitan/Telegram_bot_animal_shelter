@@ -114,6 +114,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                 }
             }
     }
+
     @Scheduled(fixedDelay = 5000)
 public  void checkFinalDate(){
     List<User> users = userService.getAllUsers();                                                          // список всех владельцев
