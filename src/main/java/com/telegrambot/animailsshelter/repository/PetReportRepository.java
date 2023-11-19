@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 public interface PetReportRepository extends JpaRepository<PetReport,Long> {
     PetReport findByUser_ChatIdAndDate(Long chatId, LocalDate date);
 
+
     PetReport findReportByUser_ChatIdAndDate(Long chatId, LocalDateTime date);
     @Query(value = "UPDATE public.pet_report set report =:report WHERE id =:id ", nativeQuery = true)
     void saveText(long id, String report);
