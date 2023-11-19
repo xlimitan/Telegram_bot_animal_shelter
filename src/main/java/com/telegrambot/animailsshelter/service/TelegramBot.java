@@ -118,19 +118,23 @@ public  void checkFinalDate(){
     List<User> users = userService.getAllUsers();                                                          // список всех владельцев
     for (User user : users) {
         if (user.getPeriod().equals(TrialPeriod.NULL)) {
+            log.info("Ещё не усыновил животное1");
+        }
+        if (user.getPeriod().equals(TrialPeriod.PROGRESS)) {
             if (user.getDate().plusDays(1).equals(LocalDate.now())) {
                 sendText(user.getChatId(), "Вам назначен дополнительный испытательный срок 14 дней");
             }
             if (user.getDate().plusDays(2).equals(LocalDate.now())) {
                 sendText(user.getChatId(), "Вам назначен дополнительный испытательный срок 30 дней");
             }
-        } else {
-            if (user.getPeriod().equals(TrialPeriod.TRY)) {
+
+        if (user.getPeriod().equals(TrialPeriod.TRY)) {
                 sendText(user.getChatId(), "Поздравляем, вы прошли испытательный срок");
-            } else {
-                sendText(user.getChatId(), "Вы не прошли испытательный срок");
             }
         }
+        if (user.getPeriod().equals(TrialPeriod.FOLSE)) {
+            sendText(user.getChatId(), "Вы не прошли испытательный срок");
+            }
         }
     }
 
@@ -138,15 +142,16 @@ public  void checkFinalDate(){
 //    @Scheduled(cron = "* * 21 * * *")
     @Scheduled(fixedDelay = 5000)
     public void checkingReports() {
-        log.error("Сообщение не отправлено!");
-        log.info("Сообщение не отправлено!");
         LocalDate dateNow = LocalDate.now();
         List<User> users = userService.getAllUsers();                                                          // список всех владельцев
         for (User user : users) {
-            if (petReportRepository.findByUser_ChatIdAndDate(user.getChatId(), dateNow) == null) {                               // если сегодня отчетов не было
+            if (user.getPeriod().equals(TrialPeriod.NULL)) {
+                log.info("Ещё не усыновил животное2");
+            }
+            if (petReportRepository.findByUser_ChatIdAndDate(user.getChatId(), dateNow) == null || user.getPeriod().equals(TrialPeriod.PROGRESS)) {                               // если сегодня отчетов не было
                 sendText(user.getChatId(), "Отправьте отчет"); // !!! проверить строку
             }
-            if (petReportRepository.checkingLastDateReports(user.getChatId()) == null) {                                              // если владелец еще не оставлял отчетов
+            if (petReportRepository.checkingLastDateReports(user.getChatId()) == null || user.getPeriod().equals(TrialPeriod.PROGRESS)) {                                              // если владелец еще не оставлял отчетов
                 Period period = user.getDate().until(dateNow);                                                            // проверяем как давно он взял питомца
                 if (period.getDays() >= 2) {                                                                                     // если больше двух дней назад
                     sendText(user.getChatId(), "Отчётов не было больше двух дней. Информация переданная волонтеру!");
