@@ -22,4 +22,7 @@ public interface UserRepository extends JpaRepository<User,Long> {
         User getReferenceById(Long userId);
     @Query(value = "UPDATE public.users_data_table set date =:date WHERE chat_id=:chat_id", nativeQuery = true)
     void saveDateByChatId(Long chat_id, LocalDate date);
+
+    @Query(value = "UPDATE public.users_data_table set e_Mail =:email WHERE chat_id =:chat_id ", nativeQuery = true)
+    void saveEmail(long chat_id, String email);
 }

@@ -29,9 +29,9 @@ public class User {
     @Column(name = "e_Mail")
     private String eMail;
 
-     @OneToOne
-     @JoinColumn(name = "animal_id")
-     private Animal animal;
+
+     @Column(name = "animal_id")
+     private Long animal;
 
     @Column(name = "date")
     private LocalDate date;
@@ -41,22 +41,19 @@ public class User {
     public User() {
     }
 
-    public User (Long chatId, String firstName, String lastName, String userName,String phoneNumber,String eMail,Animal animal, LocalDate data, TrialPeriod period) {
+    public User (Long chatId, String firstName, String lastName, String userName,String phoneNumber,String eMail,Long animal, LocalDate data, TrialPeriod period) {
         setChatId(chatId);
         setFirstName(firstName);
         setLastName(lastName);
         setUserName(userName);
         setPhoneNumber(phoneNumber);
         seteMail(eMail);
-        setAnimalId(animal);
+        setAnimal(animal);
         setDate(data);
         setPeriod(period);
     }
 
 
-    public void setAnimalId(Animal animalId) {
-        this.animal = animalId;
-    }
 
 
     public void seteMail(String eMail) {

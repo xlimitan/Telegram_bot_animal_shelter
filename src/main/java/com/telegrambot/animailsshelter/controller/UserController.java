@@ -1,5 +1,6 @@
 package com.telegrambot.animailsshelter.controller;
 
+import com.telegrambot.animailsshelter.model.Animal;
 import com.telegrambot.animailsshelter.model.TrialPeriod;
 import com.telegrambot.animailsshelter.model.User;
 import com.telegrambot.animailsshelter.repository.UserRepository;
@@ -72,6 +73,14 @@ public class UserController {
         Optional<User> optionalUser = userRepository.findByChatId(userId);
         User user = optionalUser.get();
         user.setPeriod(period);
+        userRepository.save(user);
+    }
+
+    @GetMapping("/{userId}/saveAnimalId")
+    public void saveAnimalId(@RequestParam Long userId, Long animalId) {
+        Optional<User> optionalUser = userRepository.findByChatId(userId);
+        User user = optionalUser.get();
+        user.setAnimal(animalId);
         userRepository.save(user);
     }
 }
