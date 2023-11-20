@@ -37,10 +37,6 @@ public class AddServiceTest {
 
     private AddService addService;
 
-   /* @BeforeEach
-    public void setUp() {
-        addService = new AddService(animalOwnerRepository, animalRepository, petReportRepository, shelterRepository, volunteerRepository, userRepository);
-    }*/
 
     @Test
     public void testAnimalSave() {
@@ -52,26 +48,7 @@ public class AddServiceTest {
         assertEquals(animal, savedAnimal);
     }
 
- /*   @Test
-    public void testAnimalOwnerSave() {
-        AnimalOwner animalOwner = new AnimalOwner(1L, "Иванов", "1234567890", "ivan@example.com", true);
-        Mockito.when(animalOwnerRepository.save(animalOwner)).thenReturn(animalOwner);
 
-        AnimalOwner savedAnimalOwner = addService.animalOwnerSave(1L, "Иванов", "1234567890", "ivan@example.com", true);
-
-        assertEquals(animalOwner, savedAnimalOwner);
-    }*/
-
-//    @Test
-//    public void testPetReportSave() {
-//        LocalDateTime now = LocalDateTime.now();
-//        PetReport petReport = new PetReport(1L, "Хорошая диета", "Счастливо", true, now);
-//        Mockito.when(petReportRepository.save(petReport)).thenReturn(petReport);
-//
-//        PetReport savedPetReport = addService.petReportSave(1L, "Хорошая диета", "Счастливо", true);
-//
-//        assertEquals(petReport, savedPetReport);
-//    }
 
     @Test
     public void testShelterSave() {

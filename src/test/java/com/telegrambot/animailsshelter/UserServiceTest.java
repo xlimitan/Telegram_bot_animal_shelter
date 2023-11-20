@@ -22,23 +22,6 @@ class UserServiceTest {
 
     private UserService userService;
 
-  /*  @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-        userService = new UserService(userRepository, petReportRepository);
-    }*/
-
- /*   @Test
-    void testSaveBotUser() {
-        User user = new User(1L, "John", "Doe", "johndoe");
-        when(userRepository.save(user)).thenReturn(user);
-
-        User savedUser = userService.saveBotUser(1L, "John", "Doe", "johndoe");
-
-        //assertEquals(user, savedUser);
-
-    }*/
-
     @Test
     void testGetAllUsers() {
         List<User> userList = new ArrayList<>();
@@ -49,27 +32,4 @@ class UserServiceTest {
 
         verify(userRepository, times(1)).findAll();
     }
-
-/*    @Test
-    void testGetUserById() {
-        User user = new User(1L,  "John", "Doe", "johndoe");
-        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
-
-        Optional<User> retrievedUser = userService.getUserById(1L);
-        assertTrue(retrievedUser.isPresent());
-        assertEquals(user, retrievedUser.get());
-
-        verify(userRepository, times(1)).findById(1L);
-    }*/
-
-/*    @Test
-    void testDeleteUser() {
-        User user = new User(1L, "John", "Doe", "johndoe");
-        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
-
-        Boolean result = userService.deleteUser(1L);
-        assertTrue(result);
-
-        verify(userRepository, times(1)).deleteById(1L);
-    }*/
 }
