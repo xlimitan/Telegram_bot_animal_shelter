@@ -116,7 +116,7 @@ public class TelegramBot extends TelegramLongPollingBot {
             }
     }
 
-    @Scheduled(fixedDelay = 60000)
+    @Scheduled(fixedDelay = 20000)
 public  void checkFinalDate(){
     List<User> users = userService.getAllUsers();                                                          // список всех владельцев
     for (User user : users) {
@@ -125,11 +125,11 @@ public  void checkFinalDate(){
             break;
         }
         if (user.getPeriod().equals(TrialPeriod.PROGRESS)) {
-            if (user.getDate().plusDays(1).equals(LocalDate.now())) {
+            if (user.getDate().plusDays(14).equals(LocalDate.now())) {
                 sendText(user.getChatId(), "Вам назначен дополнительный испытательный срок 14 дней");
                 break;
             }
-            if (user.getDate().plusDays(2).equals(LocalDate.now())) {
+            if (user.getDate().plusDays(30).equals(LocalDate.now())) {
                 sendText(user.getChatId(), "Вам назначен дополнительный испытательный срок 30 дней");
                 break;
             }
@@ -147,10 +147,10 @@ public  void checkFinalDate(){
 
 
 //    @Scheduled(cron = "* * 21 * * *")
-    @Scheduled(fixedDelay = 60000)
+    @Scheduled(fixedDelay = 20000)
     public void checkingReports() {
         LocalDate dateNow = LocalDate.now();
-        List<User> users = userService.getAllUsers();                                                          // список всех владельцев
+        List<User> users = userService.getAllUsers();// список всех владельцев
         for (User user : users) {
             if (user.getPeriod().equals(TrialPeriod.NULL)) {
                 log.info("Ещё не усыновил животное2");
@@ -759,7 +759,6 @@ public  void checkFinalDate(){
         SendMessage message = new SendMessage();
         message.setChatId(String.valueOf(chatId));
         message.setText(LEAVE_CONTACT_DETAILS);
-
         try {
             execute(message);
         } catch (TelegramApiException e) {

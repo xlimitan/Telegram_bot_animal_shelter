@@ -3,9 +3,8 @@ package com.telegrambot.animailsshelter.controller;
 import com.telegrambot.animailsshelter.model.Animal;
 import com.telegrambot.animailsshelter.model.TrialPeriod;
 import com.telegrambot.animailsshelter.model.User;
+import com.telegrambot.animailsshelter.repository.AnimalRepository;
 import com.telegrambot.animailsshelter.repository.UserRepository;
-import com.telegrambot.animailsshelter.service.UserService;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,8 +13,6 @@ import org.springframework.web.server.ResponseStatusException;
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import java.time.LocalDate;
-import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 /**
@@ -26,9 +23,11 @@ import java.util.Optional;
 public class UserController {
 
     private final UserRepository userRepository;
+    private final AnimalRepository animalRepository;
 
-    public UserController(UserRepository userRepository) {
+    public UserController(UserRepository userRepository, AnimalRepository animalRepository) {
         this.userRepository = userRepository;
+        this.animalRepository = animalRepository;
     }
     @GetMapping
     public ResponseEntity<List<User>> findAll() {
@@ -67,7 +66,6 @@ public class UserController {
         user.setDate(LocalDate.now());
         userRepository.save(user);
     }
-
     @GetMapping("/{userId}/savePeriod")
     public void savePeriodByUserId(@RequestParam Long userId, TrialPeriod period) {
         Optional<User> optionalUser = userRepository.findByChatId(userId);
@@ -75,7 +73,6 @@ public class UserController {
         user.setPeriod(period);
         userRepository.save(user);
     }
-
     @GetMapping("/{userId}/saveAnimalId")
     public void saveAnimalId(@RequestParam Long userId, Long animalId) {
         Optional<User> optionalUser = userRepository.findByChatId(userId);

@@ -26,14 +26,15 @@ public class UserService {
         this.userRepository = userRepository;
         this.petReportRepository = petReportRepository;
     }
+
     /**
      * Метод Сохраняет сущность User.
      * Используется метод репозитория {@link JpaRepository#save(Object)}
      *
      * @param chatId сохраняемая Id чата
      * @param firstName сохраняемая Имя
-     * @param lastName сохраняемая Фамилию
-     * @param userName сохраняемая Имя пользователя
+     * @param lastName  сохраняемая Фамилию
+     * @param userName  сохраняемая Имя пользователя
      * @return возвращаемая сущность
      */
 
@@ -41,6 +42,7 @@ public class UserService {
         User user = new User(chatId, firstName, lastName, userName, phoneNumber,eMail,animal, date, period);
         return userRepository.save(user);
     }
+
     /**
      * Метод возвращает список пользователей
      * Используется метод репозитория
@@ -49,6 +51,7 @@ public class UserService {
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
+
     /**
      * Метод возращает сущность User по ID
      * Используется метод репозитория {@link JpaRepository#findById(Object)}
@@ -66,18 +69,6 @@ public class UserService {
         Matcher matcher = pattern.matcher(message);
         if (matcher.find()) {
             user.setPhoneNumber(message);
-            userRepository.save(user);
-            SendMessage sendMessage = new SendMessage();
-        }
-    }
-
-    @Transactional
-    public void saveEMailUser(long userId, String message) {
-        User user = userRepository.getReferenceById(userId);
-        Pattern pattern = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$");
-        Matcher matcher = pattern.matcher(message);
-        if (matcher.find()) {
-            user.seteMail(message);
             userRepository.save(user);
             SendMessage sendMessage = new SendMessage();
         }
