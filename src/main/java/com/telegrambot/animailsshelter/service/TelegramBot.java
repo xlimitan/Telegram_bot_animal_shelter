@@ -65,6 +65,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     @SneakyThrows
     public void onUpdateReceived(Update update) {
         if (update.hasMessage() && update.getMessage().hasText()) {
+            checkFinalDate();
             handleMessage(update.getMessage());
             Message message = update.getMessage();
             Long chatId;
@@ -86,14 +87,12 @@ public class TelegramBot extends TelegramLongPollingBot {
         }else if (update.hasCallbackQuery()) {
             handleCallbackQuery(update.getCallbackQuery());
         }
-        //asd adasdasdasd
         Long id;
         if (update.getMessage() != null) {
             id = update.getMessage().getChatId();
         } else {
             id = update.getCallbackQuery().getMessage().getChatId();
-        }
-//            long id = update.getMessage().getChatId();
+        };
             if (update.hasMessage() && update.getMessage().hasPhoto()) {
                 PhotoSize photo = update.getMessage().getPhoto().get(3);
                 GetFile getFile = new GetFile(photo.getFileId());
@@ -113,7 +112,7 @@ public class TelegramBot extends TelegramLongPollingBot {
             }
     }
 
-    @Scheduled(fixedDelay = 5000)
+    @Scheduled(fixedDelay = 60000)
 public  void checkFinalDate(){
     List<User> users = userService.getAllUsers();                                                          // список всех владельцев
     for (User user : users) {
@@ -144,7 +143,7 @@ public  void checkFinalDate(){
 
 
 //    @Scheduled(cron = "* * 21 * * *")
-    @Scheduled(fixedDelay = 5000)
+    @Scheduled(fixedDelay = 60000)
     public void checkingReports() {
         LocalDate dateNow = LocalDate.now();
         List<User> users = userService.getAllUsers();                                                          // список всех владельцев
@@ -388,7 +387,6 @@ public  void checkFinalDate(){
         try {
             execute(message);
         } catch (TelegramApiException e) {
-//            log.error("Error occurred: " + e.getMessage());
         }
     }
 
@@ -438,7 +436,6 @@ public  void checkFinalDate(){
         try {
             execute(message);
         } catch (TelegramApiException e) {
-            //
         }
     }
 
@@ -463,7 +460,6 @@ public  void checkFinalDate(){
             user.setPeriod(TrialPeriod.NULL);
 
             userRepository.save(user);
-//            log.info("User saved: " + user);
         }
     }
 
@@ -471,7 +467,6 @@ public  void checkFinalDate(){
 
 
     private void sendHowToAdoptInfoForShelter(long chatId, String shelterChoice) {
-        //String shelterChoice = userShelterChoiceMap.get(chatId);
         SendMessage message = new SendMessage();
 
         if ("catShelter".equals(shelterChoice)) {

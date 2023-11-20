@@ -26,13 +26,6 @@ public class PetReportController {
         this.photoReportRepository = photoReportRepository;
     }
 
-    // добавление отчёта о животном
-   /* @PostMapping("/{report}")
-    public void PetReportSave(@PathVariable long id,
-                              @PathVariable String report,
-                              @PathVariable User userId) {
-        addService.petReportSave(report, id);
-    }*/
     //поиск всех отчётов о животных
     @GetMapping("/all")
     public List<PetReport> findAll() {
@@ -51,11 +44,6 @@ public class PetReportController {
         petReportRepository.deleteById(id);
     }
 
-/*    //поиск всех фото отчётов
-    @GetMapping("/photos")
-    public List<PhotoReport> findAllPhotoReport(Long chatId) {
-        return photoReportRepository.findAllPhotoReportByUserId(chatId);
-    }*/
     //поиск по Id  фото отчёта
     @GetMapping("/photos/{id}")
     public PhotoReport findByIdPhotoReport(long chatId) {
