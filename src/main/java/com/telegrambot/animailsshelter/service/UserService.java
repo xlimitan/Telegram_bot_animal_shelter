@@ -37,7 +37,7 @@ public class UserService {
      * @return возвращаемая сущность
      */
 
-    public User saveBotUser(long chatId, String firstName, String lastName, String userName, String phoneNumber, String eMail, Animal animal, LocalDate date, TrialPeriod period) {
+    public User saveBotUser(long chatId, String firstName, String lastName, String userName, String phoneNumber, String eMail, Long animal, LocalDate date, TrialPeriod period) {
         User user = new User(chatId, firstName, lastName, userName, phoneNumber,eMail,animal, date, period);
         return userRepository.save(user);
     }
@@ -66,6 +66,18 @@ public class UserService {
         Matcher matcher = pattern.matcher(message);
         if (matcher.find()) {
             user.setPhoneNumber(message);
+            userRepository.save(user);
+            SendMessage sendMessage = new SendMessage();
+        }
+    }
+
+    @Transactional
+    public void saveEMailUser(long userId, String message) {
+        User user = userRepository.getReferenceById(userId);
+        Pattern pattern = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$");
+        Matcher matcher = pattern.matcher(message);
+        if (matcher.find()) {
+            user.seteMail(message);
             userRepository.save(user);
             SendMessage sendMessage = new SendMessage();
         }

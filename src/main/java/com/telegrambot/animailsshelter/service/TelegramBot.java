@@ -80,6 +80,10 @@ public class TelegramBot extends TelegramLongPollingBot {
                 userService.savePhoneUser(message.getChatId(), message.getText());
                 sendText(message.getChatId(), "Номер сохранён!");
             }
+            if (message.getText().startsWith("Email:")) {
+                userRepository.saveEmail(message.getChatId(), message.getText());
+                sendText(message.getChatId(),"Email сохранён");
+            }
             if (message.getText().startsWith("Отчёт")) {
                 addService.petReportSave(user, message.getText());
                 sendText(message.getChatId(), "Отчёт сохранён");
@@ -252,7 +256,12 @@ public  void checkFinalDate(){
                 case "back" -> {
                     sendWelcomeMessage(chatId);
                 }
-                case "report" -> sendReportInstructions(chatId);
+                case "report" -> {
+                    sendReportInstructions(chatId);
+                }
+                case "becomeVolunteer" -> {
+                    sendBecomeVolunteerInstructions(chatId);
+                }
                 default -> sendErrorMessageAboutChoosingShelter(chatId);
             }
         }
@@ -418,7 +427,7 @@ public  void checkFinalDate(){
         List<InlineKeyboardButton> row2 = new ArrayList<>();
         InlineKeyboardButton callVolunteerButton = new InlineKeyboardButton();
         callVolunteerButton.setText("Позвать волонтера");
-        callVolunteerButton.setCallbackData("callVolunteer");
+        callVolunteerButton.setCallbackData("volunteer");
         row2.add(callVolunteerButton);
 
         List<InlineKeyboardButton> row3 = new ArrayList<>();
