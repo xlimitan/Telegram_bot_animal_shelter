@@ -1,10 +1,18 @@
 package com.telegrambot.animailsshelter.controller;
 
+import com.telegrambot.animailsshelter.model.Animal;
+import com.telegrambot.animailsshelter.model.TrialPeriod;
 import com.telegrambot.animailsshelter.model.User;
-import com.telegrambot.animailsshelter.service.UserService;
+import com.telegrambot.animailsshelter.repository.AnimalRepository;
+import com.telegrambot.animailsshelter.repository.UserRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Collection;
+import javax.validation.Valid;
+import javax.validation.constraints.Positive;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 /**
@@ -14,35 +22,63 @@ import java.util.Optional;
 @RestController
 public class UserController {
 
-    private final UserService userService;
+    private final UserRepository userRepository;
+    private final AnimalRepository animalRepository;
 
-    public UserController(UserService userService) {
-        this.userService = userService;
+    public UserController(UserRepository userRepository, AnimalRepository animalRepository) {
+        this.userRepository = userRepository;
+        this.animalRepository = animalRepository;
     }
-    // добавление пользователя
-    @PostMapping("/")
-    public User createUser(long id,long chatId,String firstName,String lastName,String userName) {
-        return userService.saveBotUser(id, chatId,firstName, lastName, userName);
+    @GetMapping
+    public ResponseEntity<List<User>> findAll() {
+        List<User> users = userRepository.findAll();
+        if (users.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(users);
     }
-    //поиск всех пользователей
-   @GetMapping("/")
-      public List<User> getAllUsers() {
-        return userService.getAllUsers();
+    @GetMapping("/chatId/{chatId}")
+    public ResponseEntity<User> findByChatId(@PathVariable @Positive Long chatId) {
+        return ResponseEntity.of(userRepository.findByChatId(chatId));
     }
-    //поиск по Id пользователя
-    @GetMapping("/{id}")
-    public Optional<User> getUserById(Long id) {
-        return userService.getUserById(id);
+    @PostMapping
+    public ResponseEntity<User> save(@RequestBody @Valid User user) {
+        try {
+            return ResponseEntity.status(HttpStatus.CREATED).body(userRepository.save(user));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
-    //редактирование пользователя
-    @PutMapping("/{id}")
-    public Integer updateUser(long id, long chatId, String firstName, String lastName, String userName) {
-        return userService.updateUser(id, chatId,firstName, lastName, userName);
+    @DeleteMapping("/{chatId}")
+    public ResponseEntity<String> deleteById(@PathVariable @Positive Long chatId) {
+        try {
+            userRepository.deleteById(chatId);
+            return ResponseEntity.ok().body("Запись удалена");
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Ошибка удаления:" + e.getMessage());
+        }
     }
-    //удаление пользователя
-    @DeleteMapping("/{id}")
-    public void deleteUser(@PathVariable Long id) {
-        userService.deleteUser(id);
+
+    @GetMapping("/{chatId}/saveDate")
+    public void saveDateByUserId(@RequestParam Long userId) {
+        Optional<User> optionalUser = userRepository.findByChatId(userId);
+        User user = optionalUser.get();
+        user.setDate(LocalDate.now());
+        userRepository.save(user);
+    }
+    @GetMapping("/{userId}/savePeriod")
+    public void savePeriodByUserId(@RequestParam Long userId, TrialPeriod period) {
+        Optional<User> optionalUser = userRepository.findByChatId(userId);
+        User user = optionalUser.get();
+        user.setPeriod(period);
+        userRepository.save(user);
+    }
+    @GetMapping("/{userId}/saveAnimalId")
+    public void saveAnimalId(@RequestParam Long userId, Long animalId) {
+        Optional<User> optionalUser = userRepository.findByChatId(userId);
+        User user = optionalUser.get();
+        user.setAnimal(animalId);
+        userRepository.save(user);
     }
 }
 

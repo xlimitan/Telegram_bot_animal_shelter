@@ -1,18 +1,21 @@
 package com.telegrambot.animailsshelter.model;
 
-import org.glassfish.grizzly.http.util.TimeStamp;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Getter;
+import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.time.LocalDate;
 
 /**
  * Класс User представляет информацию о пользователе бота. Эта информация сохраняется в базе данных.
  */
+@Setter
+@Getter
 @Entity(name = "usersDataTable")
 public class User {
-    private long id;
     @Id
-    private long chatId;
+    private Long chatId;
 
     private String firstName;
 
@@ -20,75 +23,54 @@ public class User {
 
     private String userName;
 
-    private TimeStamp registeredAt;
+    @Column(name = "phone_number")
+    private String phoneNumber;
 
+    @Column(name = "e_Mail")
+    private String eMail;
+
+
+     @Column(name = "animal_id")
+     private Long animal;
+
+    @Column(name = "date")
+    private LocalDate date;
+
+    @Column
+    private TrialPeriod period;
     public User() {
     }
-    public User(long id,long chatId, String firstName, String lastName, String userName) {
-        this.chatId = chatId;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.userName = userName;
-        this.id = id;
+
+    public User (Long chatId, String firstName, String lastName, String userName,String phoneNumber,String eMail,Long animal, LocalDate data, TrialPeriod period) {
+        setChatId(chatId);
+        setFirstName(firstName);
+        setLastName(lastName);
+        setUserName(userName);
+        setPhoneNumber(phoneNumber);
+        seteMail(eMail);
+        setAnimal(animal);
+        setDate(data);
+        setPeriod(period);
     }
 
-    public long getId() {
-        return id;
+
+
+
+    public void seteMail(String eMail) {
+        this.eMail = eMail;
     }
 
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public Long getChatId() {
-        return chatId;
-    }
-
-    public void setChatId(Long chatId) {
-        this.chatId = chatId;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public TimeStamp getRegisteredAt() {
-        return registeredAt;
-    }
-
-    public void setRegisteredAt(TimeStamp registeredAt) {
-        this.registeredAt = registeredAt;
+    public String geteMail() {
+        return eMail;
     }
 
     @Override
     public String toString() {
         return "User{" +
-                ", id" + id +
                 "chatId=" + chatId +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", userName='" + userName + '\'' +
-                ", registeredAt=" + registeredAt +
                 '}';
     }
 }

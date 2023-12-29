@@ -1,14 +1,17 @@
 -- liquibase formatted sql
 
--- changeset cod:1
+-- changeset cod:2
 
 create table  IF NOT EXISTS users_data_table (
-id bigserial primary key,
-chat_id int8,
+chat_id bigserial primary key,
 first_name varchar(20),
 last_name varchar(20),
 user_name varchar(20),
-registered_at bytea
+phone_number varchar(20),
+e_Mail varchar(100),
+animal_id int8,
+date DATE,
+period int4
 );
 
 create table if not exists animal(
@@ -21,22 +24,13 @@ path_to_photo varchar(150),
 shelter_id int8
 );
 
-create table if not exists animal_owner(
-id bigserial primary key,
-name varchar(20),
-phone_number varchar(20),
-e_mail varchar(100),
-trial_period boolean
-);
-
 create table if not exists pet_report(
 id bigserial primary key,
-diet varchar(150),
-feelings varchar(150),
-behaviour varchar(150),
-check_inf boolean,
-date timestamp,
-animalowner_id int8
+report text,
+date DATE,
+correct boolean,
+user_id int8,
+photo_id int8
 );
 
 create table if not exists shelter(
@@ -52,3 +46,21 @@ id bigserial primary key,
 name varchar(100),
 phone_number varchar(100)
 );
+
+create table if not exists photo(
+id bigserial primary key,
+file_path varchar(1024),
+file_size bigserial,
+media_type varchar(1024),
+data bytea,
+pet_report_id int8,
+animal_id int8
+);
+
+create table if not exists photo_report(
+id bigserial primary key,
+user_id int8,
+date DATE,
+path text
+)
+
